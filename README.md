@@ -28,7 +28,7 @@ This portfolio site includes:
 
 -  will.mizer@gmail.com
 -  941-812-7787
--  [LinkedIn – Will Mizer](https://www.linkedin.com/in/willmizer)
+-  [LinkedIn – Will Mizer](https://www.linkedin.com/in/will-mizer/)
 
 ---
 
