@@ -1,2 +1,1 @@
-# wills_portfolio
-Analytics Portfolio
+# Will Mizer's Data Science Portfolio
