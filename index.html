@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Will Mizer - Portfolio Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: 'Courier New', monospace;
+        background-color: white;
+      }
+      @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in {
+        animation: fade-in 3s ease-out both;
+      }
+    </style>
+  </head>
+  <body class="text-black overflow-x-hidden">
+    <main class="min-h-screen flex flex-col justify-center items-start px-8 sm:px-16 py-24 max-w-5xl mx-auto space-y-20">
+
+      <section class="w-full flex flex-col sm:flex-row items-start gap-6 animate-fade-in">
+  <!-- Profile Picture + CV Button -->
+  <div class="flex flex-col items-center sm:items-start">
+    <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-black shadow-lg">
+      <img src="/assets/profile-pic-modified.png" alt="Will Mizer Headshot" class="w-full h-full object-cover" />
+    </div>
+    <button
+  class="mt-4 ml-1 sm:ml-2 px-6 py-2 border border-black text-black rounded hover:bg-black hover:text-white hover:scale-105 hover:shadow-md transition duration-300"
+  onclick="window.open('/assets/will_mizer_resume.pdf')"
+>
+  See Resume
+</button>
+
+  </div>
+
+  <!-- Text Content + Contact Icons -->
+  <div class="border-l-4 border-black pl-6">
+    <h1 class="text-5xl sm:text-7xl font-extrabold leading-tight tracking-tight mb-4">Will Mizer</h1>
+    <p class="text-md sm:text-xl text-gray-600 max-w-xl leading-relaxed">
+      Data Analyst with a passion for clean code, clear insights, and creative storytelling. I turn data into meaningful action.
+    </p>
+    <p class="text-sm text-gray-500 mt-2 flex items-center flex-wrap gap-2">
+      Sarasota, FL · (941) 812-7787 · 
+      <a href="mailto:will.mizer@gmail.com" class="underline">will.mizer@gmail.com</a>
+
+      <!-- Social Icons -->
+      <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener noreferrer">
+        <img src="/assets/linkedin.png" alt="LinkedIn" class="w-6 h-6 ml-2 hover:scale-110 hover:drop-shadow transition duration-200" />
+      </a>
+      <a href="https://github.com/willmizer" target="_blank" rel="noopener noreferrer">
+        <img src="/assets/github.png" alt="GitHub" class="w-6 h-6 ml-1 hover:scale-110 hover:drop-shadow transition duration-200" />
+      </a>
+    </p>
+  </div>
+</section>
+
+
+    
+
+
+
+      <section class="w-full animate-fade-in">
+        <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Skills</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">Python</div>
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">pandas, matplotlib, seaborn</div>
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">scikit-learn</div>
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">SQL</div>
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">Tableau</div>
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">R (dplyr, ggplot2)</div>
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">Hadoop</div>
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">PySpark</div>
+          <div class="bg-gray-200 text-black px-3 py-2 rounded">Excel</div>
+        </div>
+      </section>
+      <section class="w-full animate-fade-in">
+  <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Projects</h2>
+  <div class="space-y-6 text-sm">
+
+    <!-- Project 1 -->
+    <div class="group block bg-white hover:bg-gray-100 p-4 rounded-lg transition-all duration-700 ease-in-out">
+      <div class="transition-opacity duration-700 group-hover:opacity-0">
+        <h3 class="text-lg font-bold text-black">🏠 Virginia Housing Analysis</h3>
+        <p class="text-gray-600">
+          Built an end-to-end housing data pipeline using requests, SQL, and Python. Predicted home prices using Random Forests and built a recommender system.
+        </p>
+      </div>
+      <div class="flex gap-3 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+        <a href="https://github.com/willmizer/va_housing_analysis" target="_blank" rel="noopener noreferrer"
+           class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
+          GitHub
+        </a>
+        <a href="https://vahousing-price-predictor.streamlit.app/" target="_blank" rel="noopener noreferrer"
+           class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
+          Live Demo
+        </a>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="group block bg-white hover:bg-gray-100 p-4 rounded-lg transition-all duration-700 ease-in-out">
+      <div class="transition-opacity duration-700 group-hover:opacity-0">
+        <h3 class="text-lg font-bold text-black">🎬 IMDb Movie Revenue & Ratings Prediction</h3>
+        <p class="text-gray-600">
+          Developed a personalized movie recommendation system that boosts accuracy by using SentenceTransformer embeddings and a hybrid similarity model across cast, director, genre, and themes. Built entirely in Python, the tool solves real-world group viewing dilemmas through an interactive, AI-driven interface.
+        </p>
+      </div>
+      <div class="flex gap-3 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+        <a href="https://github.com/willmizer/movie_data_analysis" target="_blank" rel="noopener noreferrer"
+           class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
+          GitHub
+        </a>
+        <a href="https://movie-match-ai.streamlit.app/" target="_blank" rel="noopener noreferrer"
+           class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
+          Live Demo
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+    <section class="w-full animate-fade-in">
+  <h2 class="text-2xl font-semibold mb-6 border-b border-gray-300 pb-2">Education</h2>
+
+  <!-- School 1 -->
+  <div class="relative group bg-gray-100 rounded-lg overflow-hidden shadow-sm mb-4">
+    <!-- Background image (initially hidden) -->
+    <img src="/assets/poly.png" alt="Florida Polytechnic Campus"
+         class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-30 transition duration-500 z-0" />
+    
+    <!-- Content -->
+    <div class="relative z-10 p-4 transition duration-300 group-hover:bg-white/70">
+      <p class="text-black font-bold">Florida Polytechnic University</p>
+      <p class="text-gray-600 text-sm">B.S. in Data Science — Expected May 2027</p>
+    </div>
+  </div>
+
+  <!-- School 2 -->
+  <div class="relative group bg-gray-100 rounded-lg overflow-hidden shadow-sm">
+    <img src="/assets/state_college.png" alt="State College of Florida"
+         class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-30 transition duration-500 z-0" />
+
+    <div class="relative z-10 p-4 transition duration-300 group-hover:bg-white/70">
+      <p class="text-black font-bold">State College of Florida</p>
+      <p class="text-gray-600 text-sm">A.S. in Computer Programming/Analysis — Dec 2023</p>
+    </div>
+  </div>
+</section>
+
+
+    
+ <section class="w-full animate-fade-in">
+  <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Certifications</h2>
+  <div class="grid gap-4">
+
+    <a href="/assets/DataSci.png" target="_blank" rel="noopener noreferrer"
+       class="block transition-all duration-200 hover:scale-[1.02] hover:shadow rounded cursor-pointer">
+      <div class="p-4 border-l-4 border-black bg-white rounded hover:bg-gray-100">
+        <p class="font-semibold">Introduction to Data Science with Python</p>
+        <p class="text-sm text-gray-600">edX</p>
+      </div>
+    </a>
+
+    <a href="/assets/FatChance.png" target="_blank" rel="noopener noreferrer"
+       class="block transition-all duration-200 hover:scale-[1.02] hover:shadow rounded cursor-pointer">
+      <div class="p-4 border-l-4 border-black bg-white rounded hover:bg-gray-100">
+        <p class="font-semibold">Fat Chance: Probability from the Ground Up</p>
+        <p class="text-sm text-gray-600">edX</p>
+      </div>
+    </a>
+
+    <a href="/assets/CS50PCert.png" target="_blank" rel="noopener noreferrer"
+       class="block transition-all duration-200 hover:scale-[1.02] hover:shadow rounded cursor-pointer">
+      <div class="p-4 border-l-4 border-black bg-white rounded hover:bg-gray-100">
+        <p class="font-semibold">CS50's Introduction to Programming with Python</p>
+        <p class="text-sm text-gray-600">edX</p>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+
+
+      
+    <section class="w-full animate-fade-in">
+        <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Work Experience</h2>
+        <div class="space-y-4">
+          <div class="p-5 border border-gray-300 bg-white rounded-lg">
+            <p class="text-black font-bold">TELUS International</p>
+            <p class="text-sm text-gray-600 italic mb-1">Online Data Analyst · Nov 2023 – Apr 2024</p>
+            <ul class="list-disc list-inside text-sm text-gray-700">
+              <li>Reviewed digital content to improve AI training datasets.</li>
+              <li>Ensured secure handling of sensitive information in line with data privacy regulations.</li>
+              <li>Provided feedback for optimizing ML model accuracy and relevance.</li>
+            </ul>
+          </div>
+
+          <div class="p-5 border border-gray-300 bg-white rounded-lg">
+            <p class="text-black font-bold">Florida Polytechnic University</p>
+            <p class="text-sm text-gray-600 italic mb-1">Orientation Leader · May 2025 – Present</p>
+            <ul class="list-disc list-inside text-sm text-gray-700">
+              <li>Led campus tours and facilitated group activities to promote engagement</li>
+              <li>Collaborated with fellow OLs and staff to ensure smooth event execution</li>
+              <li>Strengthened leadership, communication and public speaking skills</li>
+            </ul>
+          </div>
+
+          <div class="p-5 border border-gray-300 bg-white rounded-lg">
+            <p class="text-black font-bold">The TJX Companies, Inc</p>
+            <p class="text-sm text-gray-600 italic mb-1">Sales Associate · May 2021 – Mar 2022</p>
+            <ul class="list-disc list-inside text-sm text-gray-700">
+              <li>Monitored inventory levels, processed shipments, and restocked merchandise efficiently</li>
+              <li>Assisted customers with product recommendations and floor presentation upkeep.</li>
+              <li>Strengthened skills in retail sales, visual merchandising, customer service, and multitasking</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="w-full animate-fade-in">
+        <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Let's Talk</h2>
+        <div class="flex flex-wrap gap-4 mt-4">
+          <a href="mailto:will.mizer@gmail.com" class="px-4 py-2 border border-black text-black rounded hover:bg-black hover:text-white hover:scale-105 hover:shadow-md transition duration-300">Email</a>
+          <a href="https://github.com/willmizer" target="_blank" rel="noopener noreferrer" class="px-4 py-2 border border-black text-black rounded hover:bg-black hover:text-white hover:scale-105 hover:shadow-md transition duration-300">GitHub</a>
+          <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener noreferrer" class="px-4 py-2 border border-black text-black rounded hover:bg-black hover:text-white hover:scale-105 hover:shadow-md transition duration-300">LinkedIn</a>
+        </div>
+      </section>
+
+    </main>
+  </body>
+</html>
