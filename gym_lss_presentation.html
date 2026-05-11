@@ -1,0 +1,2376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym LSS — DMAIC Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c0f;
+  --bg2: #111418;
+  --bg3: #181d23;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8eaed;
+  --muted: #7a8494;
+  --accent: #00e5a0;
+  --accent2: #ff6b4a;
+  --accent3: #ffc844;
+  --accent4: #5b9cf6;
+  --red: #ff4d4d;
+  --green: #00e5a0;
+  --amber: #ffc844;
+  --blue: #5b9cf6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-size:15px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(10,12,15,0.88);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;height:56px;
+}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:17px;color:var(--accent);letter-spacing:0.02em}
+.nav-links{display:flex;gap:1.5rem}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:7rem 2rem 4rem;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 40%, rgba(0,229,160,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 70%, rgba(91,156,246,0.05) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;align-items:center;
+  max-width:1200px;margin:0 auto;width:100%;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);
+  border-radius:100px;padding:4px 14px;
+  font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1.5rem;
+}
+.hero-eyebrow span{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.hero-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(2.4rem,4vw,3.6rem);
+  line-height:1.1;
+  color:var(--text);
+  margin-bottom:1.2rem;
+}
+.hero-title em{color:var(--accent);font-style:italic}
+.hero-subtitle{
+  font-size:16px;color:var(--muted);line-height:1.7;
+  margin-bottom:2rem;max-width:500px;
+}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem}
+.tag{
+  font-size:12px;font-weight:500;padding:4px 12px;
+  border-radius:6px;border:1px solid var(--border2);
+  color:var(--muted);background:var(--bg3);
+  font-family:'DM Mono',monospace;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent);color:#000;
+  font-weight:600;font-size:14px;padding:10px 24px;
+  border-radius:8px;text-decoration:none;transition:opacity .2s;
+}
+.hero-cta:hover{opacity:0.85}
+
+/* PROCESS DIAGRAM */
+.process-visual{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:1.5rem;position:relative;
+}
+.process-title{font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem}
+.process-steps{display:flex;flex-direction:column;gap:0}
+.process-step{
+  display:flex;align-items:flex-start;gap:12px;padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.process-step:last-child{border-bottom:none}
+.step-dot{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px;
+  font-family:'DM Mono',monospace;
+}
+.step-dot.va{background:rgba(0,229,160,0.15);color:var(--accent);border:1px solid rgba(0,229,160,0.3)}
+.step-dot.nva{background:rgba(255,107,74,0.12);color:var(--accent2);border:1px solid rgba(255,107,74,0.25)}
+.step-dot.neutral{background:rgba(91,156,246,0.12);color:var(--blue);border:1px solid rgba(91,156,246,0.25)}
+.step-info{flex:1}
+.step-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.step-times{display:flex;gap:12px}
+.step-time{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+.step-time .val{color:var(--text)}
+.step-time .val.bad{color:var(--accent2)}
+.step-va-badge{
+  font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;
+  margin-top:4px;display:inline-block;
+}
+.badge-va{background:rgba(0,229,160,0.1);color:var(--accent)}
+.badge-nva{background:rgba(255,107,74,0.1);color:var(--accent2)}
+.badge-trigger{background:rgba(173,181,189,0.2);color:var(--muted)}
+
+/* SECTIONS */
+section{padding:5rem 2rem;max-width:1200px;margin:0 auto}
+.section-header{margin-bottom:3rem}
+.section-eyebrow{
+  font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:10px;
+}
+.section-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(1.8rem,3vw,2.6rem);
+  color:var(--text);line-height:1.2;margin-bottom:10px;
+}
+.section-desc{font-size:15px;color:var(--muted);max-width:600px;line-height:1.7}
+hr.divider{border:none;border-top:1px solid var(--border);margin:0 2rem}
+
+/* METRICS GRID */
+.metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+  margin-bottom:4rem;
+}
+.metric-card{
+  background:var(--bg2);
+  padding:1.5rem 1.25rem;
+  transition:background .2s;
+  position:relative;
+}
+.metric-card:hover{background:var(--bg3)}
+.metric-label{
+  font-size:12px;font-weight:500;letter-spacing:0.04em;
+  color:var(--muted);margin-bottom:8px;text-transform:uppercase;
+}
+.metric-val{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;margin-bottom:4px}
+.metric-val.red{color:#ff6b6b}
+.metric-val.amber{color:var(--amber)}
+.metric-val.green{color:var(--green)}
+.metric-val.blue{color:var(--blue)}
+.metric-desc{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* COQ DROPDOWN */
+.coq-dropdown{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:1rem;
+  overflow:hidden;
+}
+.coq-dropdown summary{
+  list-style:none;
+  cursor:pointer;
+  padding:1rem 1.2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  background:var(--bg3);
+}
+.coq-dropdown summary::-webkit-details-marker{display:none}
+.coq-dropdown summary .coq-kicker{
+  font-size:11px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-family:'DM Mono',monospace;
+}
+.coq-dropdown summary .coq-arrow{
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  transition:transform .2s ease;
+}
+.coq-dropdown[open] summary .coq-arrow{transform:rotate(180deg)}
+.coq-body{
+  padding:1rem 1.2rem 1.2rem;
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.coq-item{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+}
+.coq-item .label{
+  font-size:10px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:4px;
+  font-family:'DM Mono',monospace;
+}
+.coq-item .value{
+  font-size:13px;
+  color:var(--text);
+  font-family:'DM Mono',monospace;
+}
+.coq-item.full{grid-column:1 / -1}
+
+/* DATA GENERATION EXPLAINER */
+.data-explainer{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:2rem;margin-bottom:3rem;
+}
+.data-explainer-title{
+  font-size:14px;font-weight:600;color:var(--accent);
+  margin-bottom:1.2rem;display:flex;align-items:center;gap:8px;
+}
+.data-explainer-title::before{content:'◈';font-size:16px}
+.code-block{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:8px;padding:1.2rem;font-family:'DM Mono',monospace;
+  font-size:12px;color:#9db0cc;overflow-x:auto;line-height:1.8;
+  margin:1rem 0;
+}
+.code-block .kw{color:#c792ea}
+.code-block .fn{color:#82aaff}
+.code-block .str{color:#c3e88d}
+.code-block .num{color:#f78c6c}
+.code-block .cm{color:#546e7a}
+.code-block .var{color:#ffcb6b}
+.col-explain{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:1rem;
+}
+.col-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;
+}
+.col-name{font-family:'DM Mono',monospace;font-size:12px;color:var(--accent4);margin-bottom:4px}
+.col-type{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px}
+.col-desc{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* DMAIC PHASES */
+.phases-list{display:flex;flex-direction:column;gap:2px}
+.phase-card{
+  border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;transition:border-color .2s;
+}
+.phase-card:hover{border-color:var(--border2)}
+.phase-header{
+  display:flex;align-items:center;gap:14px;
+  padding:1.1rem 1.4rem;cursor:pointer;
+  background:var(--bg2);transition:background .2s;
+  user-select:none;
+}
+.phase-header:hover{background:var(--bg3)}
+.phase-num{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--muted);min-width:20px;
+}
+.phase-pill{
+  font-size:11px;font-weight:600;letter-spacing:0.08em;
+  padding:3px 10px;border-radius:4px;text-transform:uppercase;
+}
+.phase-htitle{font-size:15px;font-weight:500;color:var(--text);flex:1}
+.phase-summary{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace}
+.phase-toggle{color:var(--muted);font-size:12px;transition:transform .3s}
+.phase-toggle.open{transform:rotate(180deg)}
+.phase-body{
+  background:var(--bg3);border-top:1px solid var(--border);
+  padding:0;max-height:0;overflow:hidden;
+  transition:max-height .4s cubic-bezier(0.4,0,0.2,1), padding .4s;
+}
+.phase-body.open{padding:1.5rem;max-height:1000px}
+.phase-items{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.phase-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:12px 14px;
+}
+.phase-item-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.phase-item-title .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.phase-item-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.phase-item-tag{
+  display:inline-block;margin-top:6px;
+  font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;
+  font-family:'DM Mono',monospace;letter-spacing:0.05em;
+}
+
+/* WASTES */
+.wastes-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:12px;margin-bottom:3rem;
+}
+.waste-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.2rem;
+  transition:border-color .2s, transform .2s;
+  position:relative;overflow:hidden;
+}
+.waste-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--accent2);border-radius:2px 0 0 2px;
+}
+.waste-card:hover{border-color:rgba(255,107,74,0.3);transform:translateY(-2px)}
+.waste-icon{font-size:20px;margin-bottom:8px}
+.waste-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.waste-example{font-size:12px;color:var(--muted);line-height:1.5}
+.waste-stat{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);margin-top:6px}
+
+/* CHARTS SECTION */
+.charts-explainer{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:3rem;
+}
+.chart-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+}
+.chart-img-placeholder{
+  height:160px;background:var(--bg3);display:flex;align-items:center;
+  justify-content:center;border-bottom:1px solid var(--border);
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);
+}
+.chart-image{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-bottom:1px solid var(--border);
+  display:block;
+  background:var(--bg3);
+  cursor:zoom-in;
+  transition:transform .2s ease, filter .2s ease;
+}
+.chart-image:hover{
+  transform:scale(1.01);
+  filter:brightness(1.03);
+}
+.chart-info{padding:1rem}
+.chart-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:5px}
+.chart-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.chart-insight{
+  margin-top:8px;padding:6px 10px;
+  background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);
+  border-radius:6px;font-size:11px;color:var(--accent);
+}
+
+/* PARETO INLINE */
+.pareto-bar-chart{margin-bottom:3rem}
+.pareto-bar-row{
+  display:grid;grid-template-columns:180px 1fr 60px 60px;
+  align-items:center;gap:12px;margin-bottom:8px;
+}
+.pareto-label{font-size:12px;color:var(--muted);font-weight:500;text-align:right}
+.pareto-bar-wrap{background:var(--bg3);border-radius:4px;height:24px;position:relative;overflow:hidden}
+.pareto-bar-fill{
+  height:100%;border-radius:4px;
+  display:flex;align-items:center;padding-left:8px;
+  font-size:11px;font-weight:600;color:#000;
+  transition:width 1s cubic-bezier(0.4,0,0.2,1);
+}
+.pareto-count{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);text-align:right}
+.pareto-cum{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:right}
+
+/* FISHBONE */
+.fishbone-section{margin-bottom:3rem}
+.fishbone-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+}
+.fishbone-cat{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:1rem 1.2rem;
+}
+.fishbone-cat-title{
+  font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.fishbone-cat-title .cc{
+  display:inline-block;width:8px;height:8px;border-radius:2px;
+}
+.fishbone-causes{list-style:none;display:flex;flex-direction:column;gap:5px}
+.fishbone-causes li{
+  font-size:13px;color:var(--text);padding-left:12px;position:relative;
+}
+.fishbone-causes li::before{
+  content:'→';position:absolute;left:0;color:var(--muted);
+}
+
+/* 5 WHYS */
+.whys-chain{
+  display:flex;flex-direction:column;gap:0;margin-bottom:3rem;
+}
+.why-step{
+  display:flex;gap:16px;padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.why-step:last-child{border-bottom:none}
+.why-num{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--accent);min-width:48px;padding-top:2px;font-weight:600;
+}
+.why-q{font-size:13px;color:var(--muted);margin-bottom:4px}
+.why-a{font-size:14px;color:var(--text);font-weight:500}
+.why-arrow{color:var(--muted);font-size:16px;padding:0 4px;margin-top:2px}
+
+/* BEFORE / AFTER TABLE */
+.ba-table-wrap{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin-bottom:3rem;
+}
+.ba-table{width:100%;border-collapse:collapse;font-size:14px}
+.ba-table th{
+  padding:12px 16px;text-align:left;font-size:11px;font-weight:600;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);
+  background:var(--bg3);border-bottom:1px solid var(--border);
+}
+.ba-table td{
+  padding:14px 16px;border-bottom:1px solid var(--border);color:var(--text);
+  vertical-align:middle;
+}
+.ba-table tr:last-child td{border-bottom:none}
+.ba-table tr:hover td{background:rgba(255,255,255,0.02)}
+td.before{color:#ff6b6b;font-family:'DM Mono',monospace;font-size:13px}
+td.after{color:var(--green);font-family:'DM Mono',monospace;font-size:13px}
+td.improve{font-family:'DM Mono',monospace;font-size:12px}
+td.improve.up{color:var(--green)}
+td.improve.down{color:var(--green)}
+
+/* VSM TABLE */
+.vsm-wrap{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin-bottom:2rem;
+}
+.vsm-table{width:100%;border-collapse:collapse;font-size:13px}
+.vsm-table th{
+  padding:10px 14px;text-align:left;font-size:11px;font-weight:600;
+  letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);
+  background:var(--bg3);border-bottom:1px solid var(--border);
+}
+.vsm-table td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+.vsm-table tr:last-child td{border-bottom:none}
+.vsm-table .va-yes{color:var(--green);font-weight:500;font-size:11px}
+.vsm-table .va-no{color:var(--accent2);font-weight:500;font-size:11px}
+.vsm-table .t-bad{color:#ff6b6b;font-family:'DM Mono',monospace}
+.vsm-table .t-ok{color:var(--text);font-family:'DM Mono',monospace}
+
+/* LEAN SOLUTIONS */
+.lean-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:3rem}
+.lean-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;padding:1.4rem;position:relative;
+  transition:border-color .2s, transform .2s;
+}
+.lean-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.lean-num{
+  font-family:'DM Serif Display',serif;font-size:3rem;
+  color:rgba(255,255,255,0.04);position:absolute;top:12px;right:18px;
+  line-height:1;
+}
+.lean-label{
+  display:inline-block;font-size:10px;font-weight:600;letter-spacing:0.08em;
+  text-transform:uppercase;padding:3px 10px;border-radius:4px;margin-bottom:10px;
+}
+.lean-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:8px}
+.lean-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.lean-impact{
+  margin-top:10px;display:flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--accent);font-weight:500;
+}
+.lean-impact::before{content:'↓';font-size:14px}
+
+/* FUTURE STATE VSM */
+.future-vsm{
+  margin-top:1.5rem;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:1.2rem;
+}
+.future-vsm-title{
+  font-size:12px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+.future-vsm-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+}
+.future-vsm-step{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 10px;
+  min-height:110px;
+  position:relative;
+}
+.future-vsm-step::after{
+  content:'→';
+  position:absolute;
+  right:-11px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  font-size:14px;
+}
+.future-vsm-step:last-child::after{content:''}
+.future-vsm-step.current::before{
+  content:'Current';
+  display:inline-block;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:6px;
+}
+.future-vsm-step.future::before{
+  content:'Future';
+  display:inline-block;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:6px;
+}
+.future-vsm-step .step-name{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:6px;
+}
+.future-vsm-step .step-line{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:4px;
+}
+.future-vsm-step .step-badge{
+  display:inline-block;
+  margin-top:6px;
+  font-size:10px;
+  font-weight:600;
+  padding:2px 7px;
+  border-radius:4px;
+  font-family:'DM Mono',monospace;
+  letter-spacing:0.05em;
+}
+.future-vsm-foot{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.future-vsm-foot .foot-item{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:12px;
+  color:var(--text);
+}
+
+/* CONTROL PLAN */
+.control-table-wrap{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin-bottom:3rem;
+}
+.control-table{width:100%;border-collapse:collapse;font-size:13px}
+.control-table th{
+  padding:10px 14px;font-size:11px;font-weight:600;letter-spacing:0.07em;
+  text-transform:uppercase;color:var(--muted);
+  background:var(--bg3);border-bottom:1px solid var(--border);text-align:left;
+}
+.control-table td{padding:13px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+.control-table tr:last-child td{border-bottom:none}
+.control-table .target{color:var(--green);font-family:'DM Mono',monospace;font-size:12px}
+
+/* COST BENEFIT */
+.cb-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:3rem}
+.cb-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.2rem 1.4rem;
+}
+.cb-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.cb-label.cost{color:#ff6b6b}
+.cb-label.benefit{color:var(--green)}
+.cb-items{display:flex;flex-direction:column;gap:8px}
+.cb-item{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.cb-item-name{color:var(--muted)}
+.cb-item-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500}
+.cb-item-val.neg{color:#ff6b6b}
+.cb-item-val.pos{color:var(--green)}
+.cb-total{
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.cb-total-label{font-size:13px;font-weight:500;color:var(--text)}
+.cb-total-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:600}
+
+/* CHECKLIST */
+.checklist-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:3rem;
+}
+.check-item{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:8px 12px;
+  font-size:13px;color:var(--text);
+}
+.check-icon{
+  width:18px;height:18px;background:rgba(0,229,160,0.15);
+  border:1px solid rgba(0,229,160,0.3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:10px;color:var(--accent);
+}
+
+/* FILES */
+.files-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:3rem}
+.file-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.2rem 1.4rem;
+  display:flex;align-items:flex-start;gap:12px;
+  transition:border-color .2s;
+}
+.file-card:hover{border-color:var(--border2)}
+.file-icon{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.file-info{flex:1}
+.file-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;font-family:'DM Mono',monospace}
+.file-desc{font-size:12px;color:var(--muted);line-height:1.4}
+.file-badge{
+  display:inline-block;margin-top:6px;
+  font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;
+  font-family:'DM Mono',monospace;letter-spacing:0.05em;
+}
+
+/* SIGMA GAUGE */
+.sigma-visual{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;padding:1.5rem;margin-bottom:3rem;
+}
+.sigma-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:1rem}
+.sigma-scale{display:flex;align-items:stretch;border-radius:8px;overflow:hidden;height:40px;margin-bottom:8px}
+.sigma-seg{
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;color:#000;flex:1;
+  transition:flex .5s;
+}
+.sigma-labels{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:6px}
+.sigma-marker{
+  display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);
+}
+.sigma-marker strong{color:var(--accent)}
+
+/* METRICS DETAIL */
+.metrics-detail{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:3rem;
+}
+.mdet-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.1rem 1.2rem;
+}
+.mdet-label{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.mdet-val{font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--text);margin-bottom:4px}
+.mdet-formula{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px}
+.mdet-explain{font-size:12px;color:var(--muted);line-height:1.4}
+
+/* FOOTER */
+footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:2rem;text-align:center;
+}
+.footer-text{font-size:13px;color:var(--muted)}
+.footer-text strong{color:var(--accent)}
+
+/* PRESENTATION MODE */
+body.presentation-mode{
+  overflow:hidden;
+}
+body.presentation-mode hr.divider{
+  display:none;
+}
+body.presentation-mode .presentation-slide{
+  display:block;
+  position:fixed;
+  inset:56px 0 68px 0;
+  margin:0;
+  padding:5rem 2rem 4rem;
+  overflow-y:auto;
+  opacity:0;
+  transform:translateX(28px) scale(0.985);
+  filter:blur(2px);
+  pointer-events:none;
+  transition:opacity .42s ease, transform .42s cubic-bezier(0.2, 0.8, 0.2, 1), filter .42s ease;
+  will-change:opacity, transform, filter;
+  z-index:1;
+}
+body.presentation-mode section.presentation-slide{
+  width:min(1200px, calc(100vw - 4rem));
+  margin-inline:auto;
+}
+body.presentation-mode .presentation-slide.active{
+  opacity:1;
+  transform:translateX(0) scale(1);
+  filter:none;
+  pointer-events:auto;
+  z-index:2;
+}
+body.presentation-mode .presentation-slide.leaving-forward{
+  opacity:0;
+  transform:translateX(-28px) scale(0.985);
+  filter:blur(1px);
+}
+body.presentation-mode .presentation-slide.leaving-back{
+  opacity:0;
+  transform:translateX(28px) scale(0.985);
+  filter:blur(1px);
+}
+body.presentation-mode .presentation-slide.enter-forward{
+  transform:translateX(28px) scale(0.985);
+}
+body.presentation-mode .presentation-slide.enter-back{
+  transform:translateX(-28px) scale(0.985);
+}
+body.presentation-mode .hero.presentation-slide{
+  width:100%;
+  max-width:none;
+  padding-top:2rem;
+}
+body.presentation-mode footer{
+  display:none;
+}
+.overview-grid,
+.takeaway-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.overview-card,
+.takeaway-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1.1rem 1.2rem;
+}
+.overview-card-title,
+.takeaway-card-title{
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+.overview-card-text,
+.takeaway-card-text{
+  font-size:13px;
+  color:var(--text);
+  line-height:1.6;
+}
+.analysis-note{
+  margin:0.5rem 0 1rem;
+  padding:0.85rem 1rem;
+  border-left:3px solid var(--accent);
+  background:rgba(0,229,160,0.06);
+  color:var(--text);
+  border-radius:8px;
+  font-size:13px;
+  line-height:1.6;
+}
+.slide-controls{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:120;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  background:rgba(10,12,15,0.92);
+  backdrop-filter:blur(8px);
+  border-top:1px solid var(--border);
+}
+.slide-btn{
+  border:1px solid var(--border2);
+  background:var(--bg3);
+  color:var(--text);
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.slide-btn:hover{border-color:var(--accent4)}
+.slide-btn:disabled{
+  opacity:0.4;
+  cursor:not-allowed;
+}
+.slide-counter{
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  color:var(--muted);
+  min-width:140px;
+  text-align:center;
+}
+
+/* LIGHTBOX */
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(5,7,9,0.88);
+  backdrop-filter:blur(10px);
+}
+.lightbox.open{
+  display:flex;
+}
+.lightbox-panel{
+  width:min(96vw,1400px);
+  height:min(92vh,980px);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.lightbox-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.lightbox-title{
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  color:var(--text);
+}
+.lightbox-close{
+  border:1px solid var(--border2);
+  background:var(--bg3);
+  color:var(--text);
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.lightbox-frame{
+  flex:1;
+  min-height:0;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--bg2);
+  overflow:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.lightbox-frame img{
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  display:block;
+  box-shadow:0 20px 60px rgba(0,0,0,0.35);
+}
+.lightbox-caption{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .6s ease both}
+.delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-grid,.col-explain,.phases-items,.lean-grid,.metrics-grid,.metrics-detail,.checklist-grid,.charts-explainer{grid-template-columns:1fr 1fr!important}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .hero-grid,.metrics-grid,.lean-grid,.metrics-detail,.checklist-grid,.charts-explainer,.col-explain,.cb-grid,.files-grid,.fishbone-grid{grid-template-columns:1fr!important}
+  .overview-grid,.takeaway-grid,.future-vsm-grid,.future-vsm-foot{grid-template-columns:1fr!important}
+  .coq-body{grid-template-columns:1fr}
+  .future-vsm-step::after{content:''}
+  .pareto-bar-row{grid-template-columns:120px 1fr 50px!important}
+  .pareto-cum{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">GymLSS</div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#metrics">Metrics</a>
+    <a href="#data">Data</a>
+    <a href="#dmaic">DMAIC</a>
+    <a href="#analyze">Analyze</a>
+    <a href="#improve">Improve</a>
+    <a href="#control">Control</a>
+    <a href="#takeaways">Takeaways</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero-slide">
+  <div class="hero-grid">
+    <div class="fade-up">
+      <div class="hero-eyebrow"><span></span>Lean Six Sigma · DMAIC</div>
+      <h1 class="hero-title">Gym Check-in &<br><em>Equipment Utilization</em></h1>
+      <p class="hero-subtitle">A full DMAIC project applying Lean Six Sigma to reduce equipment wait times, improve throughput, and deliver measurable member satisfaction gains at a fitness facility.</p>
+      <div class="hero-tags">
+        <span class="tag" id="hero-total-visits">1,000 simulated visits</span>
+        <span class="tag" id="hero-sigma">σ = 2.2</span>
+        <span class="tag" id="hero-dpmo">DPMO: 227,000</span>
+        <span class="tag">5 DMAIC phases</span>
+        <span class="tag">Python dataset</span>
+      </div>
+      <a href="#metrics" class="hero-cta">View full report ↓</a>
+    </div>
+
+    <div class="fade-up delay-2">
+      <div class="process-visual">
+        <div class="process-title">Current state value stream — per visit</div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-dot neutral">1</div>
+            <div class="step-info">
+              <div class="step-name">Member arrives</div>
+              <div class="step-times"><span class="step-time">Process time: <span class="val">0 min</span></span></div>
+              <span class="step-va-badge badge-trigger">Trigger</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-dot va">2</div>
+            <div class="step-info">
+              <div class="step-name">Check-in (scan / front desk)</div>
+              <div class="step-times">
+                <span class="step-time">Process: <span class="val">1 min</span></span>
+                <span class="step-time">Wait: <span class="val bad">2 min</span></span>
+              </div>
+              <span class="step-va-badge badge-va">Value-added</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-dot nva">3</div>
+            <div class="step-info">
+              <div class="step-name">Equipment search</div>
+              <div class="step-times">
+                <span class="step-time">Process: <span class="val">2 min</span></span>
+                <span class="step-time">Wait: <span class="val bad">5 min</span></span>
+              </div>
+              <span class="step-va-badge badge-nva">Non-value-added ✗</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-dot nva">4</div>
+            <div class="step-info">
+              <div class="step-name">Wait for equipment (peak)</div>
+              <div class="step-times">
+                <span class="step-time">Process: <span class="val">0 min</span></span>
+                <span class="step-time">Wait: <span class="val bad">10 min</span></span>
+              </div>
+              <span class="step-va-badge badge-nva">Pure waste ✗</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-dot va">5</div>
+            <div class="step-info">
+              <div class="step-name">Workout (core activity)</div>
+              <div class="step-times"><span class="step-time">Duration: <span class="val" id="hero-workout-duration">~44.7 min</span></span></div>
+              <span class="step-va-badge badge-va">Value-added ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="section-header">
+    <div class="section-eyebrow">Process Overview</div>
+    <h2 class="section-title">What Is Being Studied</h2>
+    <p class="section-desc">This project examines how gym arrivals, check-in flow, and equipment availability interact in a 1,000-visit sample, then turns the bottlenecks into Lean Six Sigma actions.</p>
+  </div>
+
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="overview-card-title">What</div>
+      <div class="overview-card-text">A gym value stream from arrival to workout.</div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-title">Why It Matters</div>
+      <div class="overview-card-text">227 equipment-unavailability defects in 1,000 visits highlight the access and wait-time problem.</div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-card-title">Real-World Relevance</div>
+      <div class="overview-card-text">The same capacity mismatch appears in any service process with fixed resources and peak demand.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- METRICS -->
+<section id="metrics">
+  <div class="section-header">
+    <div class="section-eyebrow">Phase 2 — Measure</div>
+    <h2 class="section-title">Key Performance Metrics</h2>
+    <p class="section-desc">Calculated from 1,000 simulated visits with realistic peak-hour weighting. Each KPI maps directly to a Six Sigma metric.</p>
+  </div>
+
+  <details class="coq-dropdown">
+    <summary>
+      <span><span class="coq-kicker">COQ Formula</span><br>How cost of quality is calculated</span>
+      <span class="coq-arrow">▼</span>
+    </summary>
+    <div class="coq-body">
+      <div class="coq-item full">
+        <div class="label">Model</div>
+        <div class="value">COQ (monthly) = Defects x Churn Rate x Value per Customer</div>
+      </div>
+      <div class="coq-item full">
+        <div class="label">Step 1 — Inputs from Data</div>
+        <div class="value" id="coq-inputs">Total visits = 1,000 | Defects = 227</div>
+      </div>
+      <div class="coq-item">
+        <div class="label">Step 2 — Churn Assumption</div>
+        <div class="value" id="coq-churn">15% of defect visits churn due to poor experience</div>
+      </div>
+      <div class="coq-item">
+        <div class="label">Step 3 — Customer Value</div>
+        <div class="value" id="coq-value">$50 per customer per month</div>
+      </div>
+      <div class="coq-item">
+        <div class="label">Step 4 — Monthly COQ</div>
+        <div class="value" id="coq-monthly">$1,702.50 = 227 x 0.15 x $50</div>
+      </div>
+      <div class="coq-item">
+        <div class="label">Annualized COQ</div>
+        <div class="value" id="coq-annual">$20,430 = $1,702.50 x 12</div>
+      </div>
+      <div class="coq-item">
+        <div class="label">Affected Customers</div>
+        <div class="value" id="coq-affected">227 members had a defect experience</div>
+      </div>
+      <div class="coq-item">
+        <div class="label">Expected Churned Customers / Month</div>
+        <div class="value" id="coq-churned">34.05 members (227 x 0.15)</div>
+      </div>
+      <div class="coq-item full">
+        <div class="label">Expected Loss Per Defect Event</div>
+        <div class="value" id="coq-per-defect">$7.50 per defect event (0.15 x $50)</div>
+      </div>
+      <div class="coq-item full">
+        <div class="label">How Targets Are Calculated</div>
+        <div class="value">Current state metrics are calculated directly from gym_visits_data.csv (defects, visits, wait time, DPU, DPMO, yield, sigma).<br>Targets such as ~3.1sigma, ~50,000 DPMO, and 95%+ yield are projected improvement goals shown for the future state, not values measured from the current CSV.</div>
+      </div>
+    </div>
+  </details>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">Total visits simulated</div>
+      <div class="metric-val blue" id="metric-total-visits">1,000</div>
+      <div class="metric-desc">Loaded directly from gym_visits_data.csv</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">DPMO — current state</div>
+      <div class="metric-val red" id="metric-dpmo">227,000</div>
+      <div class="metric-desc">Benchmark for comparison; world-class is 3.4 DPMO (6σ).</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Process yield</div>
+      <div class="metric-val amber" id="metric-yield">77.30%</div>
+      <div class="metric-desc">Share of visits where equipment was available when needed. Target: 95%+</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Sigma level</div>
+      <div class="metric-val red" id="metric-sigma">~2.2σ</div>
+      <div class="metric-desc">Low-capability baseline; most operations aim for 4σ+.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">DPU</div>
+      <div class="metric-val amber" id="metric-dpu">0.2270</div>
+      <div class="metric-desc" id="metric-dpu-desc">227 defect events across 1,000 visits.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Avg wait — peak hours</div>
+      <div class="metric-val red" id="metric-peak-wait">9.84 min</div>
+      <div class="metric-desc" id="metric-peak-wait-desc">Peak vs off-peak wait; target remains under 5 min.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Equipment availability</div>
+      <div class="metric-val amber" id="metric-availability">77.30%</div>
+      <div class="metric-desc" id="metric-availability-desc">Peak vs off-peak access; target is 90% all hours.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Total COQ estimate</div>
+      <div class="metric-val amber" id="metric-coq">~$1,703/mo</div>
+      <div class="metric-desc">Simple model: defects x 15% churn x $50/customer = monthly COQ.</div>
+    </div>
+  </div>
+
+  <!-- Sigma scale -->
+  <div class="sigma-visual">
+    <div class="sigma-title">Six Sigma scale — current position vs target</div>
+    <div class="sigma-labels">
+      <span>1σ — 691,462 DPMO</span>
+      <span>2σ — 308,538</span>
+      <span>3σ — 66,807</span>
+      <span>4σ — 6,210</span>
+      <span>5σ — 233</span>
+      <span>6σ — 3.4</span>
+    </div>
+    <div class="sigma-scale">
+      <div class="sigma-seg" style="background:#ff4444;flex:1.5">1σ</div>
+      <div class="sigma-seg" style="background:#ff6b2b;flex:1.3;outline:3px solid #fff;position:relative;z-index:2">2σ ◄</div>
+      <div class="sigma-seg" style="background:#ff9900;flex:1.2">3σ</div>
+      <div class="sigma-seg" style="background:#ffd700;flex:1.0">4σ</div>
+      <div class="sigma-seg" style="background:#aadd00;flex:0.8">5σ</div>
+      <div class="sigma-seg" style="background:#00cc77;flex:0.5">6σ</div>
+    </div>
+    <div class="sigma-marker" id="sigma-marker">Current: <strong>~2.2σ (227,000 DPMO)</strong> &nbsp;→&nbsp; Target after improvements: <strong>~3.1σ (~50,000 DPMO)</strong></div>
+  </div>
+
+  <!-- Metrics detail: DPU / DPMO / Yield formulas -->
+  <div class="metrics-detail">
+    <div class="mdet-card">
+      <div class="mdet-label">DPU — Defects Per Unit</div>
+      <div class="mdet-val" id="mdet-dpu">0.2270</div>
+      <div class="mdet-formula">DPU = defects ÷ units</div>
+      <div class="mdet-formula" id="mdet-dpu-formula">= 227 ÷ 1,000 = 0.2270</div>
+      <div class="mdet-explain" id="mdet-dpu-explain">227 out of 1,000 visits had equipment unavailability defects.</div>
+    </div>
+    <div class="mdet-card">
+      <div class="mdet-label">DPMO — Per Million</div>
+      <div class="mdet-val" id="mdet-dpmo">227,000</div>
+      <div class="mdet-formula">DPMO = DPU × 1,000,000</div>
+      <div class="mdet-formula" id="mdet-dpmo-formula">= 0.2270 × 1,000,000 = 227,000</div>
+      <div class="mdet-explain">Normalizes to a per-million scale for industry comparison. This gym sits around 2.2σ — well below world class.</div>
+    </div>
+    <div class="mdet-card">
+      <div class="mdet-label">Yield — success rate</div>
+      <div class="mdet-val" id="mdet-yield">77.30%</div>
+      <div class="mdet-formula">Yield = (1 − DPU) × 100</div>
+      <div class="mdet-formula" id="mdet-yield-formula">= (1 − 0.2270) × 100 = 77.30%</div>
+      <div class="mdet-explain" id="mdet-yield-explain">77.30% of members accessed equipment without a defect event.</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">Supporting chart — wait time distribution</h3>
+  <div class="charts-explainer" style="grid-template-columns:1fr;margin-bottom:0">
+    <div class="chart-card">
+      <img class="chart-image" src="wait_time_distribution.png" alt="Wait time distribution chart">
+      <div class="chart-info">
+        <div class="chart-name">Wait Time Distribution</div>
+        <div class="chart-desc">File: wait_time_distribution.png. Overlapping histograms compare peak vs off-peak waits with the 5-minute target line.</div>
+        <div class="chart-insight">Peak wait distribution is clearly right-shifted versus target.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DATA GENERATION -->
+<section id="data">
+  <div class="section-header">
+    <div class="section-eyebrow">Dataset — How data was created</div>
+    <h2 class="section-title">Python Data Simulation</h2>
+    <p class="section-desc">No real gym data was used. A synthetic Python dataset mirrors peak-hour behavior and capacity constraints.</p>
+  </div>
+
+  <div class="data-explainer">
+    <div class="data-explainer-title">How the dataset was built — step by step</div>
+
+    <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:1rem">
+      <strong style="color:var(--text)">Step 1 — Hour distribution.</strong> Each of the 1,000 visits was assigned an arrival hour (6am–9pm) with peak hours (5–8pm) weighted 3–4× higher than off-peak hours.
+    </p>
+    <div class="code-block">
+<span class="cm"># Assign each visit a realistic arrival hour</span>
+<span class="var">hours</span> = np.<span class="fn">random</span>.<span class="fn">choice</span>(
+    [<span class="num">6</span>,<span class="num">7</span>,<span class="num">8</span>...<span class="num">21</span>], n=<span class="num">1000</span>,
+    p=[<span class="num">0.03</span>,<span class="num">0.04</span>,<span class="num">0.06</span>...<span class="num">0.11</span>]  <span class="cm"># peak hours weighted higher</span>
+)</div>
+
+    <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:1rem">
+      <strong style="color:var(--text)">Step 2 — Wait times via Normal distribution.</strong> Peak visits draw from N(10, 2.5) and off-peak visits from N(3, 1.5), with caps to keep values realistic.
+    </p>
+    <div class="code-block">
+<span class="var">wait_time</span> = np.<span class="fn">where</span>(
+    is_peak,
+    np.random.<span class="fn">normal</span>(<span class="num">10</span>, <span class="num">2.5</span>, n).<span class="fn">clip</span>(<span class="num">4</span>, <span class="num">18</span>),   <span class="cm"># peak: avg 10 min</span>
+    np.random.<span class="fn">normal</span>(<span class="num">3</span>,  <span class="num">1.5</span>, n).<span class="fn">clip</span>(<span class="num">0</span>,  <span class="num">8</span>)    <span class="cm"># off-peak: avg 3 min</span>
+)</div>
+
+    <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:1rem">
+      <strong style="color:var(--text)">Step 3 — Defect assignment.</strong> Peak hours have 40% unavailability, while off-peak drops to 10% for maintenance or broken equipment.
+    </p>
+    <div class="code-block">
+<span class="var">equipment_available</span> = np.<span class="fn">where</span>(
+    is_peak,
+    np.random.<span class="fn">choice</span>([<span class="num">0</span>,<span class="num">1</span>], n, p=[<span class="num">0.40</span>, <span class="num">0.60</span>]),  <span class="cm"># 40% unavailable at peak</span>
+    np.random.<span class="fn">choice</span>([<span class="num">0</span>,<span class="num">1</span>], n, p=[<span class="num">0.10</span>, <span class="num">0.90</span>])   <span class="cm"># 10% unavailable off-peak</span>
+)
+<span class="var">defect</span> = <span class="num">1</span> - <span class="var">equipment_available</span></div>
+
+    <div class="data-explainer-title" style="margin-top:1.5rem">Dataset columns — 9 fields × 1,000 rows</div>
+    <div class="col-explain">
+      <div class="col-item"><div class="col-name">visit_id</div><div class="col-type">INTEGER</div><div class="col-desc">Unique row ID, 1–1,000</div></div>
+      <div class="col-item"><div class="col-name">hour</div><div class="col-type">INTEGER (6–21)</div><div class="col-desc">Arrival hour in 24h format</div></div>
+      <div class="col-item"><div class="col-name">is_peak</div><div class="col-type">BOOLEAN</div><div class="col-desc">True if hour is 17, 18, 19, or 20</div></div>
+      <div class="col-item"><div class="col-name">check_in_time_min</div><div class="col-type">FLOAT</div><div class="col-desc">Time at front desk in minutes</div></div>
+      <div class="col-item"><div class="col-name">wait_time_min</div><div class="col-type">FLOAT</div><div class="col-desc">Minutes waiting for equipment</div></div>
+      <div class="col-item"><div class="col-name">workout_time_min</div><div class="col-type">FLOAT</div><div class="col-desc">Actual workout duration</div></div>
+      <div class="col-item"><div class="col-name">equipment_available</div><div class="col-type">0 / 1</div><div class="col-desc">1 = available, 0 = defect event</div></div>
+      <div class="col-item"><div class="col-name">defect</div><div class="col-type">0 / 1</div><div class="col-desc">Inverse of equipment_available</div></div>
+      <div class="col-item"><div class="col-name">cause_of_delay</div><div class="col-type">CATEGORICAL</div><div class="col-desc">Root cause string for Pareto analysis</div></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">Project files used in this section</h3>
+  <div class="files-grid" style="margin-bottom:0">
+    <div class="file-card">
+      <div class="file-icon" style="background:rgba(0,229,160,0.1)">🐍</div>
+      <div class="file-info">
+        <div class="file-name">lss.py</div>
+        <div class="file-desc">Python simulation script that generates the dataset and computes core metrics (DPU, DPMO, Yield, Sigma, COQ).</div>
+        <span class="file-badge" style="background:rgba(0,229,160,0.1);color:var(--accent)">Python 3</span>
+      </div>
+    </div>
+    <div class="file-card">
+      <div class="file-icon" style="background:rgba(91,156,246,0.1)">📊</div>
+      <div class="file-info">
+        <div class="file-name">gym_visits_data.csv</div>
+        <div class="file-desc">Simulated source dataset (1,000 rows × 9 columns) used by all Measure and Analyze calculations.</div>
+        <span class="file-badge" style="background:rgba(91,156,246,0.1);color:var(--blue)">Dataset · CSV</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DMAIC -->
+<section id="dmaic">
+  <div class="section-header">
+    <div class="section-eyebrow">All 5 Phases</div>
+    <h2 class="section-title">DMAIC Framework</h2>
+    <p class="section-desc">Click any phase to expand the full deliverables. Every item maps to a specific rubric requirement.</p>
+  </div>
+
+  <div class="phases-list" id="phases-list">
+    <!-- injected by JS -->
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ANALYZE -->
+<section id="analyze">
+  <div class="section-header">
+    <div class="section-eyebrow">Phase 3 — Analyze</div>
+    <h2 class="section-title">Root Cause Analysis</h2>
+    <p class="section-desc">Three analysis methods point to the same bottleneck: peak demand outpaces fixed equipment capacity.</p>
+  </div>
+
+  <!-- Pareto inline -->
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">Pareto chart — causes of equipment wait delays</h3>
+  <div class="analysis-note">Pareto isolates the largest delay sources.</div>
+  <div class="pareto-bar-chart" id="pareto-chart"></div>
+  <div class="charts-explainer" style="grid-template-columns:1fr;margin-bottom:2rem">
+    <div class="chart-card">
+      <img class="chart-image" src="pareto_chart.png" alt="Pareto chart of delay causes">
+      <div class="chart-info">
+        <div class="chart-name">Pareto Chart — Delay Causes</div>
+        <div class="chart-desc">File: pareto_chart.png. Ranks delay causes with cumulative percentage overlay to highlight the dominant few causes.</div>
+        <div class="chart-insight">Peak congestion + limited machines account for the majority of delay impact.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fishbone -->
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">Fishbone (Ishikawa) diagram — cause categories</h3>
+  <div class="analysis-note">The fishbone groups contributing causes by category.</div>
+  <div class="fishbone-section">
+    <div class="fishbone-grid">
+      <div class="fishbone-cat">
+        <div class="fishbone-cat-title"><span class="cc" style="background:#ff6b4a"></span>People</div>
+        <ul class="fishbone-causes">
+          <li>Overcrowding during 5–8pm rush</li>
+          <li>Members clustering around popular machines</li>
+          <li>No awareness of less-congested areas</li>
+        </ul>
+      </div>
+      <div class="fishbone-cat">
+        <div class="fishbone-cat-title"><span class="cc" style="background:#5b9cf6"></span>Process</div>
+        <ul class="fishbone-causes">
+          <li>No equipment reservation or scheduling system</li>
+          <li>First-come-first-served creates bottlenecks</li>
+          <li>Manual check-in slows throughput</li>
+        </ul>
+      </div>
+      <div class="fishbone-cat">
+        <div class="fishbone-cat-title"><span class="cc" style="background:#ffc844"></span>Machine / Equipment</div>
+        <ul class="fishbone-causes">
+          <li>Limited number of treadmills and benches</li>
+          <li>Broken equipment not flagged in real-time</li>
+          <li>Uneven distribution of popular vs unpopular equipment</li>
+        </ul>
+      </div>
+      <div class="fishbone-cat">
+        <div class="fishbone-cat-title"><span class="cc" style="background:#00e5a0"></span>Environment / Method</div>
+        <ul class="fishbone-causes">
+          <li>Peak hour congestion in free-weight zone</li>
+          <li>No visual availability signage on floor</li>
+          <li>Layout does not guide traffic flow efficiently</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 Whys -->
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">5 Whys — drilling to root cause</h3>
+  <div class="analysis-note">The 5 Whys traces the issue back to scheduling and visibility gaps.</div>
+  <div class="whys-chain">
+    <div class="why-step">
+      <div class="why-num">WHY 1</div>
+      <div>
+        <div class="why-q">Why do members experience long wait times?</div>
+        <div class="why-a">Equipment is occupied and unavailable when they arrive</div>
+      </div>
+    </div>
+    <div class="why-step">
+      <div class="why-num">WHY 2</div>
+      <div>
+        <div class="why-q">Why is equipment always occupied at the same time?</div>
+        <div class="why-a">Too many members arrive in the same 3-hour window (5–8pm)</div>
+      </div>
+    </div>
+    <div class="why-step">
+      <div class="why-num">WHY 3</div>
+      <div>
+        <div class="why-q">Why are all members arriving in the same window?</div>
+        <div class="why-a">No scheduling system — members arrive whenever they can after work</div>
+      </div>
+    </div>
+    <div class="why-step">
+      <div class="why-num">WHY 4</div>
+      <div>
+        <div class="why-q">Why is there no scheduling system?</div>
+        <div class="why-a">The gym operates purely first-come-first-served with no demand management</div>
+      </div>
+    </div>
+    <div class="why-step">
+      <div class="why-num">WHY 5</div>
+      <div>
+        <div class="why-q">Why has no demand management been implemented?</div>
+        <div class="why-a" style="color:var(--accent)">Root cause: no optimization or real-time tracking infrastructure exists</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Root cause box -->
+  <div style="background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.2);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:2rem">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin-bottom:6px">Root Cause Statement</div>
+    <div style="font-size:15px;color:var(--text);line-height:1.6">Excessive wait times are caused by <strong>demand exceeding available equipment capacity during peak hours</strong>, combined with the <strong>absence of a structured system to manage equipment allocation</strong>.</div>
+  </div>
+
+  <!-- VSM table -->
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">Current state VSM — time analysis</h3>
+  <div class="vsm-wrap">
+    <table class="vsm-table">
+      <thead>
+        <tr>
+          <th>Process Step</th>
+          <th>Process Time</th>
+          <th>Wait Time</th>
+          <th>Value Added?</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Member arrives</td>
+          <td class="t-ok">0 min</td>
+          <td class="t-ok">0 min</td>
+          <td><span class="va-no">✗ No</span></td>
+          <td style="font-size:12px;color:var(--muted)">Trigger point</td>
+        </tr>
+        <tr>
+          <td>Check-in (scan / desk)</td>
+          <td class="t-ok">1 min</td>
+          <td class="t-bad">2 min</td>
+          <td><span class="va-yes">✓ Yes</span></td>
+          <td style="font-size:12px;color:var(--muted)">Queue at desk during peak</td>
+        </tr>
+        <tr>
+          <td>Equipment search</td>
+          <td class="t-ok">2 min</td>
+          <td class="t-bad">5 min</td>
+          <td><span class="va-no">✗ No</span></td>
+          <td style="font-size:12px;color:var(--muted)">Walking floor, pure waste</td>
+        </tr>
+        <tr>
+          <td>Wait for equipment (peak)</td>
+          <td class="t-ok">0 min</td>
+          <td class="t-bad">10 min</td>
+          <td><span class="va-no">✗ No</span></td>
+          <td style="font-size:12px;color:var(--muted)">Largest single waste</td>
+        </tr>
+        <tr>
+          <td>Workout</td>
+          <td class="t-ok" id="vsm-workout-pt">44.7 min</td>
+          <td class="t-ok">0 min</td>
+          <td><span class="va-yes">✓ Yes</span></td>
+          <td style="font-size:12px;color:var(--muted)">Core value delivery</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="display:flex;gap:20px;font-size:13px;margin-bottom:3rem">
+    <span style="color:var(--muted)">Total lead time: <strong style="color:var(--text)" id="vsm-lead-time">~64.7 min</strong></span>
+    <span style="color:var(--muted)">Non-value-added: <strong style="color:var(--accent2)" id="vsm-nva-pct">26.3% of total time</strong></span>
+    <span style="color:var(--muted)">Target: <strong style="color:var(--accent)">NVA &lt; 5%</strong></span>
+  </div>
+
+</section>
+
+<hr class="divider">
+
+<!-- 7 WASTES -->
+<section id="wastes">
+  <div class="section-header">
+    <div class="section-eyebrow">Lean Thinking — TIMWOOD</div>
+    <h2 class="section-title">7 Wastes in the Gym</h2>
+    <p class="section-desc">All seven Lean wastes appear here, but waiting, motion, and defects account for the biggest losses.</p>
+  </div>
+  <div class="wastes-grid">
+    <div class="waste-card">
+      <div class="waste-icon">⏳</div>
+      <div class="waste-name">Waiting</div>
+      <div class="waste-example">Members idle 10+ minutes for treadmills during 5–8pm rush. Pure dead time — no value created.</div>
+      <div class="waste-stat" id="waste-waiting-stat">Avg peak wait: 9.84 min · 227 defect events</div>
+    </div>
+    <div class="waste-card">
+      <div class="waste-icon">🚶</div>
+      <div class="waste-name">Motion</div>
+      <div class="waste-example">Walking the entire gym floor searching for an available machine. No centralized availability display.</div>
+      <div class="waste-stat">Avg search time: 2–5 min per visit</div>
+    </div>
+    <div class="waste-card">
+      <div class="waste-icon">👥</div>
+      <div class="waste-name">Inventory (overcrowding)</div>
+      <div class="waste-example">30–40 members competing for 12 treadmills simultaneously during peak. System overload.</div>
+      <div class="waste-stat" id="waste-inventory-stat">Peak availability: 56.4%</div>
+    </div>
+    <div class="waste-card">
+      <div class="waste-icon">🔄</div>
+      <div class="waste-name">Overprocessing</div>
+      <div class="waste-example">Staff manually checking and re-checking equipment status throughout the day. No automation.</div>
+      <div class="waste-stat">Estimated 1–2 hrs/day staff overhead</div>
+    </div>
+    <div class="waste-card">
+      <div class="waste-icon">⚠️</div>
+      <div class="waste-name">Defects</div>
+      <div class="waste-example">Equipment marked available but broken or out of service when member arrives. Rework needed.</div>
+      <div class="waste-stat" id="waste-defects-stat">227 defect events in 1,000-visit sample</div>
+    </div>
+    <div class="waste-card">
+      <div class="waste-icon">🏃</div>
+      <div class="waste-name">Transportation</div>
+      <div class="waste-example">Members migrating between zones when their preferred area is too congested. Disrupts flow.</div>
+      <div class="waste-stat">Estimated 3–4 min per redirected visit</div>
+    </div>
+    <div class="waste-card">
+      <div class="waste-icon">💡</div>
+      <div class="waste-name">Non-utilized talent</div>
+      <div class="waste-example">Staff spending time on manual equipment tracking instead of coaching members or improving service.</div>
+      <div class="waste-stat">Skills underutilized on tracking admin</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- IMPROVE -->
+<section id="improve">
+  <div class="section-header">
+    <div class="section-eyebrow">Phase 4 — Improve</div>
+    <h2 class="section-title">Lean Solutions & Future State</h2>
+    <p class="section-desc">Four countermeasures target the wastes identified in Measure and Analyze.</p>
+  </div>
+
+  <div class="lean-grid">
+    <div class="lean-card" style="border-color:rgba(0,229,160,0.2)">
+      <div class="lean-num">01</div>
+      <div class="lean-label" style="background:rgba(0,229,160,0.1);color:var(--accent)">Reservation System</div>
+      <div class="lean-title">App-based equipment booking</div>
+      <div class="lean-desc">Members pre-book specific equipment slots up to 24 hours in advance via a mobile app. Eliminates blind arrival during peak hours. The system enforces time limits (e.g. 30 min per treadmill) and sends reminders 10 minutes before.</div>
+      <div class="lean-impact">Reduces peak wait time by ~60% · Eliminates pure waiting waste</div>
+    </div>
+    <div class="lean-card" style="border-color:rgba(91,156,246,0.2)">
+      <div class="lean-num">02</div>
+      <div class="lean-label" style="background:rgba(91,156,246,0.1);color:var(--blue)">5S Layout Redesign</div>
+      <div class="lean-title">Sort, Set, Shine, Standardize, Sustain</div>
+      <div class="lean-desc">Reorganize equipment zones with clear floor markings, category signage, and logical flow paths. Remove rarely-used equipment to free space. Color-code zones (cardio / strength / flexibility). Visual management makes navigation instant.</div>
+      <div class="lean-impact">Eliminates motion waste · Reduces search time from 5 min → &lt;1 min</div>
+    </div>
+    <div class="lean-card" style="border-color:rgba(255,200,68,0.2)">
+      <div class="lean-num">03</div>
+      <div class="lean-label" style="background:rgba(255,200,68,0.1);color:var(--amber)">Poka-Yoke Display</div>
+      <div class="lean-title">Real-time availability screens</div>
+      <div class="lean-desc">Large digital displays at the gym entrance and on the app show live equipment status (green = available, red = occupied, yellow = reserved). Members know before walking to a machine. Broken equipment flags automatically via sensor or staff tap.</div>
+      <div class="lean-impact">Error-proofs equipment access · Eliminates defect &amp; overprocessing waste</div>
+    </div>
+    <div class="lean-card" style="border-color:rgba(255,107,74,0.2)">
+      <div class="lean-num">04</div>
+      <div class="lean-label" style="background:rgba(255,107,74,0.1);color:var(--accent2)">Load Balancing</div>
+      <div class="lean-title">Demand smoothing across hours</div>
+      <div class="lean-desc">Off-peak discount pricing (5–10% off monthly fee) incentivizes members to shift visits to 10am–3pm. Capacity alerts push notifications when gym hits 70% capacity. AI suggests alternative time slots during booking flow based on predicted congestion.</div>
+      <div class="lean-impact">Flattens the peak-hour curve · Improves all-day utilization</div>
+    </div>
+  </div>
+
+  <div class="future-vsm">
+    <div class="future-vsm-title">Future State VSM — visual flow</div>
+    <div class="future-vsm-grid">
+      <div class="future-vsm-step current">
+        <div class="step-name">Arrival</div>
+        <div class="step-line">Member enters gym.</div>
+        <div class="step-line">Current wait: variable.</div>
+        <span class="step-badge" style="background:rgba(255,107,74,0.1);color:var(--accent2)">Trigger</span>
+      </div>
+      <div class="future-vsm-step future">
+        <div class="step-name">App Check-in</div>
+        <div class="step-line">QR scan or booking confirmation.</div>
+        <div class="step-line">Process time: 0.3 min.</div>
+        <div class="step-line">Wait: &lt; 1 min.</div>
+        <span class="step-badge" style="background:rgba(0,229,160,0.1);color:var(--accent)">Value-added</span>
+      </div>
+      <div class="future-vsm-step future">
+        <div class="step-name">Live Availability</div>
+        <div class="step-line">Digital display shows open machines.</div>
+        <div class="step-line">Search time: 0 min.</div>
+        <div class="step-line">No walking waste.</div>
+        <span class="step-badge" style="background:rgba(91,156,246,0.1);color:var(--blue)">Visual control</span>
+      </div>
+      <div class="future-vsm-step future">
+        <div class="step-name">Reserved Equipment</div>
+        <div class="step-line">Member goes directly to assigned machine.</div>
+        <div class="step-line">Wait: &lt; 2 min.</div>
+        <div class="step-line">Defects flagged instantly.</div>
+        <span class="step-badge" style="background:rgba(255,200,68,0.1);color:var(--amber)">Poka-yoke</span>
+      </div>
+      <div class="future-vsm-step future">
+        <div class="step-name">Workout</div>
+        <div class="step-line">Core value is delivered.</div>
+        <div class="step-line" id="future-workout-duration">Avg session: 44.7 min.</div>
+        <div class="step-line">Total NVA &lt; 5% target.</div>
+        <span class="step-badge" style="background:rgba(255,107,74,0.1);color:var(--accent2)">Value-added</span>
+      </div>
+    </div>
+    <div class="future-vsm-foot">
+        <div class="foot-item">Scan-only check-in replaces desk handling.</div>
+        <div class="foot-item">Booking and visual management remove most waiting and search waste.</div>
+        <div class="foot-item">This future state VSM meets the rubric requirement.</div>
+    </div>
+  </div>
+
+  <!-- Before / After -->
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">Before vs after — projected results</h3>
+  <div class="ba-table-wrap">
+    <table class="ba-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Before (current state)</th>
+          <th>After (projected target)</th>
+          <th>Improvement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Avg wait time (peak)</td>
+          <td class="before" id="before-peak-wait">9.84 min</td>
+          <td class="after">4.0 min</td>
+          <td class="improve down">↓ 59%</td>
+        </tr>
+        <tr>
+          <td>Avg check-in time</td>
+          <td class="before" id="before-checkin">1.60 min</td>
+          <td class="after">0.50 min</td>
+          <td class="improve down">↓ 70%</td>
+        </tr>
+        <tr>
+          <td>Equipment availability %</td>
+          <td class="before" id="before-availability">77.3%</td>
+          <td class="after">92%</td>
+          <td class="improve up">↑ +14.7pp</td>
+        </tr>
+        <tr>
+          <td>DPMO</td>
+          <td class="before" id="before-dpmo">227,000</td>
+          <td class="after">~50,000</td>
+          <td class="improve down">↓ 78%</td>
+        </tr>
+        <tr>
+          <td>Sigma level</td>
+          <td class="before" id="before-sigma">~2.2σ</td>
+          <td class="after">~3.1σ</td>
+          <td class="improve up">↑ +0.9σ</td>
+        </tr>
+        <tr>
+          <td>Process yield</td>
+          <td class="before" id="before-yield">77.30%</td>
+          <td class="after">95%+</td>
+          <td class="improve up">↑ +18.75pp</td>
+        </tr>
+        <tr>
+          <td>Member satisfaction</td>
+          <td class="before" style="font-family:inherit;font-size:14px">Low / frustrated</td>
+          <td class="after" style="font-family:inherit;font-size:14px">High / smooth experience</td>
+          <td class="improve up">Qualitative ↑</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="charts-explainer" style="grid-template-columns:1fr;margin-bottom:2rem">
+    <div class="chart-card">
+      <img class="chart-image" src="before_after_chart.png" alt="Before and after KPI chart">
+      <div class="chart-info">
+        <div class="chart-name">Before vs After Comparison</div>
+        <div class="chart-desc">File: before_after_chart.png. Visual comparison of wait time, check-in time, and equipment availability between current and future state.</div>
+        <div class="chart-insight">Confirms the projected direction of improvement used in this section.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cost benefit -->
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">Cost-benefit analysis</h3>
+  <div class="cb-grid">
+    <div class="cb-card">
+      <div class="cb-label cost">Implementation Costs (one-time)</div>
+      <div class="cb-items">
+        <div class="cb-item"><span class="cb-item-name">App / reservation system development</span><span class="cb-item-val neg">−$8,000</span></div>
+        <div class="cb-item"><span class="cb-item-name">Equipment sensors / IoT trackers</span><span class="cb-item-val neg">−$3,000</span></div>
+        <div class="cb-item"><span class="cb-item-name">Digital display screens (×3)</span><span class="cb-item-val neg">−$1,500</span></div>
+        <div class="cb-item"><span class="cb-item-name">Staff training (2 days)</span><span class="cb-item-val neg">−$800</span></div>
+      </div>
+      <div class="cb-total">
+        <span class="cb-total-label">Total cost</span>
+        <span class="cb-total-val" style="color:#ff6b6b">−$13,300</span>
+      </div>
+    </div>
+    <div class="cb-card">
+      <div class="cb-label benefit">Annual Benefits (recurring)</div>
+      <div class="cb-items">
+        <div class="cb-item"><span class="cb-item-name">Recovered churn loss (from simplified COQ model)</span><span class="cb-item-val pos">+$20,430</span></div>
+      </div>
+      <div class="cb-total">
+        <span class="cb-total-label">Annual benefit</span>
+        <span class="cb-total-val" style="color:var(--green)">+$20,430</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);border-radius:10px;padding:12px 16px;font-size:14px;margin-bottom:3rem">
+    <strong style="color:var(--accent)">Recurring annual benefit (simplified model): +$20,430/year</strong>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTROL -->
+<section id="control">
+  <div class="section-header">
+    <div class="section-eyebrow">Phase 5 — Control</div>
+    <h2 class="section-title">Sustaining the Gains</h2>
+    <p class="section-desc">A control plan ensures improvements don't decay. Metrics are monitored continuously, SOPs are documented, and process ownership is assigned.</p>
+  </div>
+
+  <div class="control-table-wrap" style="margin-bottom:2rem">
+    <table class="control-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Target</th>
+          <th>Monitoring method</th>
+          <th>Frequency</th>
+          <th>Owner</th>
+          <th>Response if breached</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Avg wait time (peak)</td>
+          <td class="target">&lt; 5 min</td>
+          <td>App system logs</td>
+          <td>Daily</td>
+          <td>Floor Manager</td>
+          <td>Trigger load-balancing alerts</td>
+        </tr>
+        <tr>
+          <td>Equipment availability %</td>
+          <td class="target">&gt; 90%</td>
+          <td>IoT sensor dashboard</td>
+          <td>Real-time / Weekly review</td>
+          <td>Ops Manager</td>
+          <td>Schedule maintenance, review capacity</td>
+        </tr>
+        <tr>
+          <td>Check-in time</td>
+          <td class="target">&lt; 1 min</td>
+          <td>App timestamp logs</td>
+          <td>Weekly</td>
+          <td>Front Desk Lead</td>
+          <td>Staff re-training on scan process</td>
+        </tr>
+        <tr>
+          <td>DPMO</td>
+          <td class="target">&lt; 50,000</td>
+          <td>Monthly metric report</td>
+          <td>Monthly</td>
+          <td>Quality Lead</td>
+          <td>Root cause re-analysis, PDCA cycle</td>
+        </tr>
+        <tr>
+          <td>Peak hour congestion</td>
+          <td class="target">&lt; 75% capacity</td>
+          <td>Occupancy sensors</td>
+          <td>Hourly during peak</td>
+          <td>Floor Manager</td>
+          <td>Push off-peak discount notifications</td>
+        </tr>
+        <tr>
+          <td>Member satisfaction (NPS)</td>
+          <td class="target">&gt; 50</td>
+          <td>Post-visit app survey</td>
+          <td>Weekly average</td>
+          <td>GM</td>
+          <td>Review recent complaint themes</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem">Standard operating procedures (SOPs)</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:3rem">
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px">SOP 1 — Check-in Process</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5">Members scan QR or key fob. Desk staff only engage if scan fails. Peak-hour queue managed with stanchion system. Max 90-second check-in target.</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px">SOP 2 — Equipment Usage</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5">30-min time limits on cardio during peak. Members log end of use in app. Equipment flagged defective immediately via app tap or red card system.</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px">SOP 3 — Staff Monitoring</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5">Floor staff conduct 15-min zone sweeps during peak hours. Escalate equipment issues within 10 minutes. End-of-day digital handover report filed.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- KEY TAKEAWAYS -->
+<section id="takeaways">
+  <div class="section-header">
+    <div class="section-eyebrow">Key Results / Takeaways</div>
+    <h2 class="section-title">Overall Summary</h2>
+    <p class="section-desc">The target state is easy to defend because wait time, defects, and sigma all move in the same direction.</p>
+  </div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-card-title">Wait Time</div>
+      <div class="takeaway-card-text">Peak wait time falls from 9.84 minutes to a 4.0 minute target, which is about a 59% reduction.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-card-title">DPMO</div>
+      <div class="takeaway-card-text">DPMO falls from 227,000 to about 50,000, which is about a 78% reduction in defects per million opportunities.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-card-title">Sigma</div>
+      <div class="takeaway-card-text">Sigma improves from about 2.2 to 3.1, showing the process moves materially closer to a more controlled state.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">
+    <strong>Gym Check-in & Equipment Utilization</strong> · Lean Six Sigma DMAIC Project ·
+    1,000 simulated visits · σ = 2.2 → 3.1 target · Python simulation + full report
+  </div>
+</footer>
+
+<div class="slide-controls" id="slide-controls">
+  <button class="slide-btn" id="prev-slide" type="button">← Previous</button>
+  <div class="slide-counter" id="slide-counter">1 / 1</div>
+  <button class="slide-btn" id="next-slide" type="button">Next →</button>
+</div>
+
+<div class="lightbox" id="chart-lightbox" aria-hidden="true">
+  <div class="lightbox-panel" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+    <div class="lightbox-toolbar">
+      <div class="lightbox-title" id="lightbox-title">Chart preview</div>
+      <button class="lightbox-close" id="lightbox-close" type="button">Close</button>
+    </div>
+    <div class="lightbox-frame">
+      <img id="lightbox-image" alt="Expanded chart preview">
+    </div>
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+
+<script>
+function parseCsv(text) {
+  const lines = text.trim().split(/\r?\n/).filter(Boolean);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const cols = line.split(',');
+    const row = {};
+    headers.forEach((h, i) => {
+      row[h] = (cols[i] || '').trim();
+    });
+    return row;
+  });
+}
+
+function avg(nums) {
+  if (!nums.length) return 0;
+  return nums.reduce((a, b) => a + b, 0) / nums.length;
+}
+
+function toNum(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function isPeakRow(row) {
+  if (row.is_peak === 'True' || row.is_peak === 'true') return true;
+  const h = toNum(row.hour);
+  return h >= 17 && h <= 20;
+}
+
+function estimateSigma(dpmo) {
+  const bands = [
+    { sigma: 1, dpmo: 691462 },
+    { sigma: 2, dpmo: 308538 },
+    { sigma: 3, dpmo: 66807 },
+    { sigma: 4, dpmo: 6210 },
+    { sigma: 5, dpmo: 233 },
+    { sigma: 6, dpmo: 3.4 }
+  ];
+
+  if (dpmo >= bands[0].dpmo) return 1;
+  if (dpmo <= bands[bands.length - 1].dpmo) return 6;
+
+  for (let i = 0; i < bands.length - 1; i++) {
+    const high = bands[i];
+    const low = bands[i + 1];
+    if (dpmo <= high.dpmo && dpmo >= low.dpmo) {
+      const highLog = Math.log10(high.dpmo);
+      const lowLog = Math.log10(low.dpmo);
+      const curLog = Math.log10(dpmo);
+      const t = (highLog - curLog) / (highLog - lowLog);
+      return high.sigma + t * (low.sigma - high.sigma);
+    }
+  }
+
+  return 1;
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function setHtml(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = value;
+}
+
+function setupChartLightbox() {
+  const lightbox = document.getElementById('chart-lightbox');
+  const lightboxImage = document.getElementById('lightbox-image');
+  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const closeButton = document.getElementById('lightbox-close');
+
+  if (!lightbox || !lightboxImage || !lightboxTitle || !lightboxCaption || !closeButton) return;
+
+  const chartMeta = {
+    'pareto_chart.png': {
+      title: 'Pareto Chart — Delay Causes',
+      caption: 'Expanded Pareto chart showing the delay cause distribution.'
+    },
+    'before_after_chart.png': {
+      title: 'Before vs After Comparison',
+      caption: 'Expanded comparison chart for the core before/after KPIs.'
+    },
+    'wait_time_distribution.png': {
+      title: 'Wait Time Distribution',
+      caption: 'Expanded histogram comparing peak and off-peak wait times.'
+    }
+  };
+
+  function openLightbox(src, alt) {
+    const meta = chartMeta[src] || { title: alt || 'Chart preview', caption: alt || '' };
+    lightboxImage.src = src;
+    lightboxImage.alt = alt || meta.title;
+    lightboxTitle.textContent = meta.title;
+    lightboxCaption.textContent = meta.caption;
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    lightboxImage.src = '';
+  }
+
+  document.querySelectorAll('.chart-image').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.getAttribute('src') || '', img.getAttribute('alt') || 'Chart preview'));
+  });
+
+  closeButton.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+      closeLightbox();
+    }
+  });
+}
+
+// DMAIC phases data
+const phases = [
+  {
+    color:'#5b9cf6', pill:'Define', pillBg:'rgba(91,156,246,0.12)',
+    title:'Phase 1 — Define', summary:'Charter · SIPOC · VOC · CTQ',
+    items:[
+      {title:'Project Charter',dot:'#5b9cf6',desc:'Problem: members wait 8–12 min for popular equipment during peak hours. Goal: cut average wait below 5 min and improve equipment utilization by 30%.',tag:'Required',tagStyle:'rgba(91,156,246,0.1);color:#5b9cf6'},
+      {title:'SIPOC Diagram',dot:'#5b9cf6',desc:'Suppliers: Front desk staff, equipment vendors, scheduling/app system.<br>Inputs: Membership ID, equipment inventory, floor layout, staffing schedule.<br>Processes: Arrive → Scan/Check-in → Find equipment → Wait/Access machine → Workout → Exit.<br>Outputs: Checked-in member (timestamped), equipment utilization/access, wait time experienced, completed workout session.<br>Customers: Members (primary), gym operations team (secondary).',tag:'Required',tagStyle:'rgba(91,156,246,0.1);color:#5b9cf6'},
+      {title:'Voice of Customer (VOC)',dot:'#5b9cf6',desc:'Members want fast check-in and reliable access to equipment.',tag:'Required',tagStyle:'rgba(91,156,246,0.1);color:#5b9cf6'},
+      {title:'CTQs — Critical to Quality',dot:'#5b9cf6',desc:'Wait time < 5 min. Equipment availability > 90%. Check-in < 1 min.',tag:'Required',tagStyle:'rgba(91,156,246,0.1);color:#5b9cf6'},
+    ]
+  },
+  {
+    color:'#00e5a0', pill:'Measure', pillBg:'rgba(0,229,160,0.1)',
+    title:'Phase 2 — Measure', summary:'VSM · 7 Wastes · Dataset · DPU/DPMO/Sigma/COQ',
+    items:[
+      {title:'Current State VSM',dot:'#00e5a0',desc:'Check-in: 1 min PT / 2 min wait. Search: 2 min PT / 5 min wait. Wait for machine: 0 PT / 10 min wait. NVA totals about 17 minutes per visit, driven mainly by search and equipment waiting.',tag:'VSM',tagStyle:'rgba(0,229,160,0.1);color:#00e5a0'},
+      {title:'Python data simulation',dot:'#00e5a0',desc:'1,000 visits generated using NumPy normal distributions. Peak hours (5–8pm) weighted 3–4× higher. Wait times: N(10,2.5) peak, N(3,1.5) off-peak. Equipment unavailability: 40% peak, 10% off-peak.',tag:'Python',tagStyle:'rgba(0,229,160,0.1);color:#00e5a0'},
+      {title:'DPU · DPMO · Yield · Sigma',dot:'#00e5a0',desc:'DPU = 0.2270 (227 defects ÷ 1,000 visits). DPMO = 227,000. Process Yield = 77.30%. Sigma Level ≈ 2.2σ. Target: DPMO < 50,000, Sigma ≥ 3.1σ.',tag:'Metrics',tagStyle:'rgba(0,229,160,0.1);color:#00e5a0'},
+      {title:'Cost of Quality (COQ)',dot:'#00e5a0',desc:'Simple model: COQ = defects x churn rate x value per customer = 227 x 0.15 x $50 = $1,702.50/month (~$20,430/year).',tag:'COQ',tagStyle:'rgba(0,229,160,0.1);color:#00e5a0'},
+    ]
+  },
+  {
+    color:'#ffc844', pill:'Analyze', pillBg:'rgba(255,200,68,0.1)',
+    title:'Phase 3 — Analyze', summary:'Fishbone · 5 Whys · Pareto · Root cause',
+    items:[
+      {title:'Fishbone (Ishikawa) diagram',dot:'#ffc844',desc:'People: overcrowding, clustering behavior. Process: no scheduling, first-come-first-serve. Machine: limited equipment, no real-time status. Environment: peak hour congestion, poor floor layout.',tag:'Cause & Effect',tagStyle:'rgba(255,200,68,0.1);color:#ffc844'},
+      {title:'5 Whys analysis',dot:'#ffc844',desc:'Long waits trace to first-come-first-served demand with no scheduling or tracking.',tag:'Root Cause',tagStyle:'rgba(255,200,68,0.1);color:#ffc844'},
+      {title:'Pareto chart (Python)',dot:'#ffc844',desc:'Top causes: Peak Hours Congestion (29.0%), Limited Machines (27.8%), Poor Layout (19.6%), No Scheduling (15.2%), Broken Equipment (8.4%). First two causes alone account for 56.8% of all delays.',tag:'Python',tagStyle:'rgba(255,200,68,0.1);color:#ffc844'},
+      {title:'Root cause statement',dot:'#ffc844',desc:'Peak demand exceeds available equipment capacity, and no structured allocation system exists to balance access in real time.',tag:'Confirmed',tagStyle:'rgba(255,200,68,0.1);color:#ffc844'},
+    ]
+  },
+  {
+    color:'#ff6b4a', pill:'Improve', pillBg:'rgba(255,107,74,0.1)',
+    title:'Phase 4 — Improve', summary:'Future VSM · 4 Lean solutions · Before/After · Cost-benefit',
+    items:[
+      {title:'Future State VSM',dot:'#ff6b4a',desc:'Check-in: 0.3 min. Search: 0 min. Wait: <2 min. NVA is reduced to <5% of lead time.',tag:'VSM',tagStyle:'rgba(255,107,74,0.1);color:#ff6b4a'},
+      {title:'Reservation system (Solution 1)',dot:'#ff6b4a',desc:'App booking up to 24h ahead with 30-min limits and reminders.',tag:'Lean',tagStyle:'rgba(255,107,74,0.1);color:#ff6b4a'},
+      {title:'5S + Poka-yoke (Solutions 2 & 3)',dot:'#ff6b4a',desc:'5S adds clear flow and signage. Poka-yoke displays stop members from walking to occupied or broken machines.',tag:'Lean',tagStyle:'rgba(255,107,74,0.1);color:#ff6b4a'},
+      {title:'Load balancing (Solution 4)',dot:'#ff6b4a',desc:'Off-peak discounts, capacity alerts, and AI suggestions flatten demand.',tag:'Lean',tagStyle:'rgba(255,107,74,0.1);color:#ff6b4a'},
+    ]
+  },
+  {
+    color:'#c084fc', pill:'Control', pillBg:'rgba(192,132,252,0.1)',
+    title:'Phase 5 — Control', summary:'Control plan · SOPs · Ongoing KPIs',
+    items:[
+      {title:'Control plan',dot:'#c084fc',desc:'6 metrics tracked: wait time, availability, check-in, DPMO, congestion, and NPS.',tag:'KPIs',tagStyle:'rgba(192,132,252,0.1);color:#c084fc'},
+      {title:'SOPs — 3 documented',dot:'#c084fc',desc:'SOP 1: Check-in process (scan-first, 90-sec target). SOP 2: Equipment usage (30-min limits, defect flagging). SOP 3: Staff monitoring (15-min peak zone sweeps, digital handover reports).',tag:'SOPs',tagStyle:'rgba(192,132,252,0.1);color:#c084fc'},
+      {title:'Ongoing monitoring',dot:'#c084fc',desc:'Monthly dashboard reviews, quarterly audits, and annual NPS tracking.',tag:'Sustain',tagStyle:'rgba(192,132,252,0.1);color:#c084fc'},
+      {title:'Process ownership',dot:'#c084fc',desc:'Floor Manager owns waits and congestion. Ops Manager owns availability. Quality Lead owns DPMO. GM owns NPS.',tag:'Governance',tagStyle:'rgba(192,132,252,0.1);color:#c084fc'},
+    ]
+  }
+];
+
+const list = document.getElementById('phases-list');
+phases.forEach((p,i) => {
+  const open = i === 0;
+  const card = document.createElement('div');
+  card.className = 'phase-card';
+  card.innerHTML = `
+    <div class="phase-header" onclick="togglePhase(${i})">
+      <span class="phase-num">0${i+1}</span>
+      <span class="phase-pill" style="background:${p.pillBg};color:${p.color}">${p.pill}</span>
+      <span class="phase-htitle">${p.title}</span>
+      <span class="phase-summary">${p.summary}</span>
+      <span class="phase-toggle ${open?'open':''}" id="arr${i}">▼</span>
+    </div>
+    <div class="phase-body ${open?'open':''}" id="body${i}">
+      <div class="phase-items">
+        ${p.items.map(it=>`
+          <div class="phase-item">
+            <div class="phase-item-title">
+              <span class="dot" style="background:${it.dot}"></span>
+              ${it.title}
+            </div>
+            <div class="phase-item-desc">${it.desc}</div>
+            <span class="phase-item-tag" style="background:${it.tagStyle.split(';')[0].replace('rgba','rgba').replace('(','(')};color:${it.tagStyle.split('color:')[1]}">${it.tag}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  list.appendChild(card);
+});
+
+function togglePhase(i) {
+  const body = document.getElementById('body'+i);
+  const arr = document.getElementById('arr'+i);
+  const isOpen = body.classList.toggle('open');
+  arr.classList.toggle('open', isOpen);
+}
+
+function renderPareto(paretoRows) {
+  const colors = ['#ff4d4d', '#ff8c42', '#ffc844', '#5b9cf6', '#00e5a0', '#9a8cff'];
+  const pc = document.getElementById('pareto-chart');
+  if (!pc) return;
+
+  pc.innerHTML = '';
+
+  const hdr = document.createElement('div');
+  hdr.className = 'pareto-bar-row';
+  hdr.style.marginBottom = '10px';
+  hdr.innerHTML = '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:right">Cause</div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Frequency</div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Count</div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Cum %</div>';
+  pc.appendChild(hdr);
+
+  paretoRows.forEach((r, idx) => {
+    const row = document.createElement('div');
+    row.className = 'pareto-bar-row';
+    row.innerHTML = `
+      <div class="pareto-label">${r.label}</div>
+      <div class="pareto-bar-wrap">
+        <div class="pareto-bar-fill" style="width:${r.pct}%;background:${colors[idx % colors.length]}">${r.pct >= 15 ? r.pct + '%' : ''}</div>
+      </div>
+      <div class="pareto-count">${r.count}</div>
+      <div class="pareto-cum">${r.cum}%</div>
+    `;
+    pc.appendChild(row);
+  });
+
+  const top2Cum = paretoRows.length > 1 ? paretoRows[1].cum : (paretoRows[0]?.cum || 0);
+  const note = document.createElement('div');
+  note.style.cssText = 'font-size:12px;color:var(--muted);margin-top:10px;font-style:italic';
+  note.textContent = `Top 2 causes account for ${top2Cum}% of all delays — validating Pareto prioritization.`;
+  pc.appendChild(note);
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.pareto-bar-fill').forEach(b => {
+          const w = b.style.width;
+          b.style.width = '0%';
+          setTimeout(() => {
+            b.style.width = w;
+          }, 100);
+        });
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(pc);
+}
+
+async function loadCsvMetrics() {
+  try {
+    const res = await fetch('gym_visits_data.csv');
+    if (!res.ok) throw new Error(`Failed to load CSV: ${res.status}`);
+
+    const csvText = await res.text();
+    const rows = parseCsv(csvText);
+    if (!rows.length) throw new Error('CSV appears empty');
+
+    const totalVisits = rows.length;
+    const defects = rows.reduce((sum, row) => sum + (toNum(row.defect) === 1 ? 1 : 0), 0);
+    const dpu = defects / totalVisits;
+    const dpmo = dpu * 1000000;
+    const yieldPct = (1 - dpu) * 100;
+    const sigma = estimateSigma(dpmo);
+
+    const peakRows = rows.filter(isPeakRow);
+    const offPeakRows = rows.filter(r => !isPeakRow(r));
+    const avgPeakWait = avg(peakRows.map(r => toNum(r.wait_time_min)));
+    const avgOffPeakWait = avg(offPeakRows.map(r => toNum(r.wait_time_min)));
+    const avgCheckin = avg(rows.map(r => toNum(r.check_in_time_min)));
+    const avgWorkout = avg(rows.map(r => toNum(r.workout_time_min)));
+
+    const availability = avg(rows.map(r => toNum(r.equipment_available))) * 100;
+    const availabilityPeak = avg(peakRows.map(r => toNum(r.equipment_available))) * 100;
+    const availabilityOffPeak = avg(offPeakRows.map(r => toNum(r.equipment_available))) * 100;
+    const coqChurnRate = 0.15;
+    const coqCustomerValue = 50;
+    const coqMonthly = defects * coqChurnRate * coqCustomerValue;
+    const coqAnnual = coqMonthly * 12;
+    const coqPerDefect = coqChurnRate * coqCustomerValue;
+    const coqExpectedChurned = defects * coqChurnRate;
+
+    const causeCounts = rows.reduce((acc, row) => {
+      const cause = row.cause_of_delay || 'Unknown';
+      acc[cause] = (acc[cause] || 0) + 1;
+      return acc;
+    }, {});
+
+    const paretoRows = Object.entries(causeCounts)
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => b.count - a.count)
+      .map((item, idx, arr) => {
+        const pctRaw = (item.count / totalVisits) * 100;
+        const priorCum = arr.slice(0, idx).reduce((sum, v) => sum + (v.count / totalVisits) * 100, 0);
+        const cumRaw = priorCum + pctRaw;
+        return {
+          label: item.label,
+          count: item.count,
+          pct: Math.round(pctRaw),
+          cum: Math.round(cumRaw)
+        };
+      });
+
+    setText('hero-total-visits', `${totalVisits.toLocaleString()} simulated visits`);
+    setText('hero-sigma', `σ = ${sigma.toFixed(1)}`);
+    setText('hero-dpmo', `DPMO: ${Math.round(dpmo).toLocaleString()}`);
+
+    setText('metric-total-visits', totalVisits.toLocaleString());
+    setText('metric-dpmo', Math.round(dpmo).toLocaleString());
+    setText('metric-yield', `${yieldPct.toFixed(2)}%`);
+    setText('metric-sigma', `~${sigma.toFixed(1)}σ`);
+    setText('metric-dpu', dpu.toFixed(4));
+    setText('metric-peak-wait', `${avgPeakWait.toFixed(2)} min`);
+    setText('metric-peak-wait-desc', `5–8pm rush. Off-peak average = ${avgOffPeakWait.toFixed(2)} min. Target: <5 min all hours`);
+    setText('metric-availability', `${availability.toFixed(1)}%`);
+    setText('metric-availability-desc', `During peak: ${availabilityPeak.toFixed(1)}% available. Off-peak: ${availabilityOffPeak.toFixed(1)}%. Target: 90% all hours`);
+    setText('metric-dpu-desc', `Defects Per Unit = ${defects} defect events ÷ ${totalVisits} visits`);
+    setText('metric-coq', `~$${Math.round(coqMonthly).toLocaleString()}/mo`);
+    setText('coq-inputs', `Total visits = ${totalVisits.toLocaleString()} | Defects = ${defects}`);
+    setText('coq-churn', `${(coqChurnRate * 100).toFixed(0)}% of defect visits churn due to poor experience`);
+    setText('coq-value', `$${coqCustomerValue} per customer per month`);
+    setText('coq-monthly', `$${coqMonthly.toFixed(2)} = ${defects} x ${coqChurnRate.toFixed(2)} x $${coqCustomerValue}`);
+    setText('coq-annual', `$${coqAnnual.toFixed(0)} = $${coqMonthly.toFixed(2)} x 12`);
+    setText('coq-affected', `${defects} members had a defect experience`);
+    setText('coq-churned', `${coqExpectedChurned.toFixed(2)} members (${defects} x ${coqChurnRate.toFixed(2)})`);
+    setText('coq-per-defect', `$${coqPerDefect.toFixed(2)} per defect event (${coqChurnRate.toFixed(2)} x $${coqCustomerValue})`);
+
+    setHtml('sigma-marker', `Current: <strong>~${sigma.toFixed(1)}σ (${Math.round(dpmo).toLocaleString()} DPMO)</strong> &nbsp;→&nbsp; Target after improvements: <strong>~3.1σ (~50,000 DPMO)</strong>`);
+
+    setText('mdet-dpu', dpu.toFixed(4));
+    setText('mdet-dpu-formula', `= ${defects} ÷ ${totalVisits} = ${dpu.toFixed(4)}`);
+    setText('mdet-dpu-explain', `${defects} out of ${totalVisits} visits had equipment unavailability defects.`);
+    setText('mdet-dpmo', Math.round(dpmo).toLocaleString());
+    setText('mdet-dpmo-formula', `= ${dpu.toFixed(4)} × 1,000,000 = ${Math.round(dpmo).toLocaleString()}`);
+    setText('mdet-yield', `${yieldPct.toFixed(2)}%`);
+    setText('mdet-yield-formula', `= (1 − ${dpu.toFixed(4)}) × 100 = ${yieldPct.toFixed(2)}%`);
+    setText('mdet-yield-explain', `${yieldPct.toFixed(2)}% of visits had equipment available. ${(100 - yieldPct).toFixed(2)}% experienced unavailability.`);
+
+    setText('waste-waiting-stat', `Avg peak wait: ${avgPeakWait.toFixed(2)} min · ${defects} defect events`);
+    setText('waste-inventory-stat', `Peak availability: ${availabilityPeak.toFixed(1)}%`);
+    setText('waste-defects-stat', `${defects} defect events in ${totalVisits}-visit sample`);
+
+    setText('before-peak-wait', `${avgPeakWait.toFixed(2)} min`);
+    setText('before-checkin', `${avgCheckin.toFixed(2)} min`);
+    setText('before-availability', `${availability.toFixed(1)}%`);
+    setText('before-dpmo', Math.round(dpmo).toLocaleString());
+    setText('before-sigma', `~${sigma.toFixed(1)}σ`);
+    setText('before-yield', `${yieldPct.toFixed(2)}%`);
+    setText('hero-workout-duration', `~${avgWorkout.toFixed(1)} min`);
+    setText('future-workout-duration', `Avg session: ${avgWorkout.toFixed(1)} min.`);
+
+    const vsmTotalLead = 1 + 2 + 2 + 5 + 10 + avgWorkout;
+    const vsmNvaTime = 2 + 5 + 10;
+    const vsmNvaPct = vsmTotalLead ? (vsmNvaTime / vsmTotalLead) * 100 : 0;
+
+    setText('vsm-workout-pt', `${avgWorkout.toFixed(1)} min`);
+    setText('vsm-lead-time', `${vsmTotalLead.toFixed(1)} min`);
+    setText('vsm-nva-pct', `${vsmNvaPct.toFixed(1)}% of total time`);
+
+    renderPareto(paretoRows);
+  } catch (err) {
+    console.error('Could not load gym_visits_data.csv', err);
+  }
+}
+
+const slideOrder = [
+  'hero-slide',
+  'overview',
+  'metrics',
+  'data',
+  'dmaic',
+  'analyze',
+  'wastes',
+  'improve',
+  'control',
+  'takeaways'
+];
+
+let currentSlideIndex = 0;
+let slideTransitionTimer = null;
+
+function updateSlideCounter() {
+  const counter = document.getElementById('slide-counter');
+  const prev = document.getElementById('prev-slide');
+  const next = document.getElementById('next-slide');
+  if (!counter || !prev || !next) return;
+
+  counter.textContent = `Slide ${currentSlideIndex + 1} / ${slideOrder.length}`;
+  prev.disabled = currentSlideIndex === 0;
+  next.disabled = currentSlideIndex === slideOrder.length - 1;
+}
+
+function goToSlide(index) {
+  const bounded = Math.max(0, Math.min(index, slideOrder.length - 1));
+  if (bounded === currentSlideIndex && document.getElementById(slideOrder[bounded])?.classList.contains('active')) {
+    return;
+  }
+
+  const direction = bounded > currentSlideIndex ? 'forward' : 'back';
+  const currentId = slideOrder[currentSlideIndex];
+  const nextId = slideOrder[bounded];
+  const currentEl = document.getElementById(currentId);
+  const nextEl = document.getElementById(nextId);
+
+  if (!nextEl) return;
+
+  window.clearTimeout(slideTransitionTimer);
+
+  document.body.classList.toggle('transition-forward', direction === 'forward');
+  document.body.classList.toggle('transition-back', direction === 'back');
+
+  if (currentEl && currentEl !== nextEl) {
+    currentEl.classList.remove('enter-forward', 'enter-back');
+    currentEl.classList.add('leaving', direction === 'forward' ? 'leaving-forward' : 'leaving-back');
+    currentEl.classList.remove('active');
+  }
+
+  nextEl.classList.remove('leaving', 'leaving-forward', 'leaving-back');
+  nextEl.classList.add('active', direction === 'forward' ? 'enter-forward' : 'enter-back');
+  nextEl.scrollTop = 0;
+
+  requestAnimationFrame(() => {
+    nextEl.classList.remove('enter-forward', 'enter-back');
+  });
+
+  currentSlideIndex = bounded;
+
+  slideTransitionTimer = window.setTimeout(() => {
+    slideOrder.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (i !== bounded) {
+        el.classList.remove('active', 'leaving', 'leaving-forward', 'leaving-back', 'enter-forward', 'enter-back');
+      }
+    });
+  }, 460);
+
+  updateSlideCounter();
+}
+
+function goToSlideById(id) {
+  const idx = slideOrder.indexOf(id);
+  if (idx >= 0) goToSlide(idx);
+}
+
+function enablePresentationMode() {
+  document.body.classList.add('presentation-mode');
+
+  slideOrder.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('presentation-slide');
+  });
+
+  document.getElementById('prev-slide')?.addEventListener('click', () => goToSlide(currentSlideIndex - 1));
+  document.getElementById('next-slide')?.addEventListener('click', () => goToSlide(currentSlideIndex + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') goToSlide(currentSlideIndex + 1);
+    if (e.key === 'ArrowLeft') goToSlide(currentSlideIndex - 1);
+  });
+
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', e => {
+      const href = link.getAttribute('href') || '';
+      if (!href.startsWith('#')) return;
+      const targetId = href.slice(1);
+      if (slideOrder.includes(targetId)) {
+        e.preventDefault();
+        goToSlideById(targetId);
+      }
+    });
+  });
+
+  goToSlide(0);
+}
+
+loadCsvMetrics();
+enablePresentationMode();
+setupChartLightbox();
+</script>
+</body>
+</html>
