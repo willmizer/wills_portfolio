@@ -241,6 +241,13 @@
     transform: rotate(-1deg) scale(1.02);
     filter: grayscale(0) contrast(1);
   }
+  /* Hide the profile portrait + its decorative frame on mobile */
+  @media (max-width: 640px) {
+    .portrait,
+    .portrait-wrap {
+      display: none;
+    }
+  }
 
   /* Decorative corners */
   .corner-mark::before,
