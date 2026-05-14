@@ -1,293 +1,628 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Will Mizer - Portfolio Page</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-      body {
-        font-family: 'Courier New', monospace;
-        background-color: white;
-      }
-      @keyframes fade-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fade-in {
-        animation: fade-in 3s ease-out both;
-      }
-    </style>
-  </head>
-  <body class="text-black overflow-x-hidden">
-    <main class="min-h-screen flex flex-col justify-center items-start px-8 sm:px-16 py-24 max-w-5xl mx-auto space-y-20">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Will Mizer — Data Science Portfolio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --paper: #f5f3ee;
+    --paper-2: #ebe7df;
+    --rule: #1a1a1a;
+    --accent: #c8472b;
+    --muted: #6b6660;
+  }
+  * { font-family: 'Courier New', Courier, monospace; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    background-image:
+      radial-gradient(rgba(10,10,10,0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
 
-      <section class="w-full flex flex-col sm:flex-row items-start gap-6 animate-fade-in">
-  <!-- Profile Picture + CV Button -->
-  <div class="flex flex-col items-center sm:items-start">
-    <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-black shadow-lg">
-      <img src="assets/profile-pic-modified.png" alt="Will Mizer Headshot" class="w-full h-full object-cover" />
+  /* Top stripe / nav bar */
+  .topbar {
+    border-bottom: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* Section index numbers */
+  .idx {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  /* Big display headings */
+  .display {
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.88;
+  }
+
+  /* Marquee / ticker */
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker 40s linear infinite;
+  }
+  .ticker-item {
+    padding: 0 2rem;
+    white-space: nowrap;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+  }
+
+  /* Hover underline that draws in */
+  .link {
+    position: relative;
+    display: inline-block;
+  }
+  .link::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 100%; height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .link:hover::after { transform: scaleX(1); }
+
+  /* Project card */
+  .project {
+    border-top: 1px solid var(--ink);
+    padding: 2rem 0;
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 2rem;
+    align-items: start;
+    transition: background 0.3s ease, padding-left 0.4s ease;
+  }
+  .project:hover {
+    background: var(--paper-2);
+    padding-left: 1rem;
+  }
+  .project:last-child { border-bottom: 1px solid var(--ink); }
+  @media (max-width: 640px) {
+    .project { grid-template-columns: 1fr; gap: 0.75rem; }
+  }
+
+  /* Skill chip */
+  .chip {
+    border: 1px solid var(--ink);
+    padding: 0.5rem 0.9rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .chip:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--accent);
+  }
+  .chip .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* Cert card */
+  .cert {
+    border: 1px solid var(--ink);
+    padding: 1.1rem 1.2rem;
+    background: var(--paper);
+    transition: all 0.3s ease;
+    display: block;
+  }
+  .cert:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 var(--accent);
+  }
+  .cert:hover .cert-sub { color: rgba(245,243,238,0.7); }
+
+  /* Job card */
+  .job {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-top: 1px dashed var(--ink);
+  }
+  .job:last-child { border-bottom: 1px dashed var(--ink); }
+  @media (max-width: 640px) {
+    .job { grid-template-columns: 1fr; gap: 0.5rem; }
+  }
+
+  /* Education card with hover image */
+  .edu {
+    position: relative;
+    border: 1px solid var(--ink);
+    padding: 1.5rem;
+    overflow: hidden;
+    background: var(--paper);
+    transition: all 0.3s ease;
+  }
+  .edu::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+  .edu.poly::before { background-image: url('assets/poly.png'); }
+  .edu.scf::before { background-image: url('assets/state_college.png'); }
+  .edu:hover::before { opacity: 0.18; }
+  .edu > * { position: relative; z-index: 1; }
+
+  /* Reveal animation */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .rise { animation: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .rise-1 { animation-delay: 0.05s; }
+  .rise-2 { animation-delay: 0.15s; }
+  .rise-3 { animation-delay: 0.25s; }
+  .rise-4 { animation-delay: 0.35s; }
+  .rise-5 { animation-delay: 0.45s; }
+
+  /* Section frame */
+  .frame {
+    border: 1px solid var(--ink);
+    padding: 1.25rem;
+    background: var(--paper);
+  }
+
+  /* Big accent number */
+  .accent-num {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Outline button */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.1rem;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    transition: all 0.25s ease;
+  }
+  .btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--accent);
+  }
+  .btn.solid {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn.solid:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+
+  /* Profile portrait — square, framed, slight tilt on hover */
+  .portrait {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--ink);
+    filter: grayscale(0.2) contrast(1.05);
+    transition: transform 0.5s ease, filter 0.5s ease;
+  }
+  .portrait:hover {
+    transform: rotate(-1deg) scale(1.02);
+    filter: grayscale(0) contrast(1);
+  }
+
+  /* Decorative corners */
+  .corner-mark::before,
+  .corner-mark::after {
+    content: "+";
+    position: absolute;
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+  .corner-mark::before { top: -8px; left: -8px; }
+  .corner-mark::after { bottom: -8px; right: -8px; }
+</style>
+</head>
+<body class="antialiased">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between text-xs tracking-widest">
+      <span>WILL.MIZER / PORTFOLIO</span>
+      <span class="hidden sm:inline">SARASOTA · FL · USA</span>
     </div>
-    <button
-  class="mt-4 ml-1 sm:ml-2 px-6 py-2 border border-black text-black rounded hover:bg-black hover:text-white hover:scale-105 hover:shadow-md transition duration-300"
-  onclick="window.open('assets/will_mizer_resume.pdf')"
->
-  See Resume
-</button>
-
   </div>
 
-  <!-- Text Content + Contact Icons -->
-  <div class="border-l-4 border-black pl-6">
-    <h1 class="text-5xl sm:text-7xl font-extrabold leading-tight tracking-tight mb-4">Will Mizer</h1>
-    <p class="text-md sm:text-xl text-gray-600 max-w-xl leading-relaxed">
-      I’m a Data Science student at Florida Polytechnic University, building on an A.S. in Computer Programming & Analysis from the State College of Florida. I have a passion for clean code, clear insights, and strong communication. Outside of data, I’m a big movie fan, The Lord of the Rings trilogy is my all-time favorite.
-    </p>
-    <p class="text-sm text-gray-500 mt-2 flex items-center flex-wrap gap-2">
-      Sarasota, FL · (941) 812-7787 · 
-      <a href="mailto:will.mizer@gmail.com" class="underline">will.mizer@gmail.com</a>
-
-      <!-- Social Icons -->
-      <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener noreferrer">
-        <img src="assets/linkedin.png" alt="LinkedIn" class="w-6 h-6 ml-2 hover:scale-110 hover:drop-shadow transition duration-200" />
-      </a>
-      <a href="https://github.com/willmizer" target="_blank" rel="noopener noreferrer">
-        <img src="assets/github.png" alt="GitHub" class="w-6 h-6 ml-1 hover:scale-110 hover:drop-shadow transition duration-200" />
-      </a>
-    </p>
+  <!-- MARQUEE -->
+  <div class="border-b border-black overflow-hidden bg-[var(--paper-2)] py-2">
+    <div class="ticker-track">
+      <div class="flex">
+        <span class="ticker-item">  DATA SCIENCE</span>
+        <span class="ticker-item">★ MACHINE LEARNING ★</span>
+        <span class="ticker-item">  PYTHON · SQL · R</span>
+        <span class="ticker-item">★ AVAILABLE FOR INTERNSHIPS ★</span>
+        <span class="ticker-item">  FLORIDA POLYTECHNIC UNIVERSITY</span>
+        <span class="ticker-item">★ EXPECTED MAY 2027 ★</span>
+      </div>
+      <div class="flex" aria-hidden="true">
+        <span class="ticker-item">  DATA SCIENCE</span>
+        <span class="ticker-item">★ MACHINE LEARNING ★</span>
+        <span class="ticker-item">  PYTHON · SQL · R</span>
+        <span class="ticker-item">★ AVAILABLE FOR INTERNSHIPS ★</span>
+        <span class="ticker-item">  FLORIDA POLYTECHNIC UNIVERSITY</span>
+        <span class="ticker-item">★ EXPECTED MAY 2027 ★</span>
+      </div>
+    </div>
   </div>
-</section>
 
+  <main class="max-w-6xl mx-auto px-6 sm:px-10 py-12 sm:py-20">
 
-    
-
-
-
-      <section class="w-full animate-fade-in">
-        <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Skills</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">Python</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">pandas, matplotlib, numpy</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">scikit-learn</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">Statistical Analysis</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">SQL</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">Excel</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">Tableau</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">Power BI</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">Machine Learning</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">AWS and GCP</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">R (dplyr, ggplot2)</div>
-          <div class="bg-gray-200 text-black px-3 py-2 rounded">Big Data Tools (PySpark, Hadoop)</div>
+    <!-- HERO -->
+    <section class="grid grid-cols-12 gap-6 sm:gap-10 mb-24 sm:mb-32">
+      <div class="col-span-12 sm:col-span-4 rise rise-1">
+        <div class="relative">
+          <span class="corner-mark"></span>
+          <img src="assets/profile-pic-modified.png" alt="Will Mizer" class="portrait" />
         </div>
-      </section>
-     <section class="w-full animate-fade-in">
-  <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Projects</h2>
-  <div class="space-y-6 text-sm">
-
-
-
-     <!-- Project 1 -->
-    <div class="group block bg-white hover:bg-gray-100 p-4 rounded-lg transition-all duration-700 ease-in-out">
-      <div class="transition-opacity duration-700 group-hover:opacity-0 sm:group-hover:opacity-0">
-        <h3 class="text-lg font-bold text-black">🎓 College Student Happiness Predictor </h3>
-        <p class="text-gray-600">
-          Developed an end-to-end Machine Learning pipeline in Python to predict college well-being metrics based on institutional and student financial data. The project involved training and testing various regression models (Random Forest, Linear Regression and XGBoost), model evaluation, and deploying the final predictive application onto an AWS EC2 instance for live, interactive access.        </p>
+        <div class="mt-4 text-xs leading-relaxed">
+          
+          <div class="flex justify-between border-b border-black py-1">
+            <span class="text-[var(--muted)]">ROLE</span>
+            <span>DATA SCIENCE</span>
+          </div>
+          <div class="flex justify-between border-b border-black py-1">
+            <span class="text-[var(--muted)]">STATUS</span>
+            <span class="text-[var(--accent)]">● OPEN TO WORK</span>
+          </div>
+        </div>
       </div>
-      <div class="flex gap-3 mt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-700">
-        <a href="https://github.com/willmizer/college_happiness" target="_blank" rel="noopener noreferrer"
-          class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
-          GitHub
-        </a>
-        <a href="https://collegehappiness.duckdns.org/" target="_blank" rel="noopener noreferrer"
-          class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
-          AWS Live Demo
-        </a>
+
+      <div class="col-span-12 sm:col-span-8 rise rise-2">
+        <div class="flex items-baseline justify-between mb-4">
+          <span class="idx">INTRODUCTION</span>
+
+        </div>
+
+        <h1 class="display text-[3.5rem] sm:text-[6.5rem]">
+          Will<br/>
+          Mizer
+        </h1>
+
+        <div class="mt-6 max-w-xl text-[15px] leading-relaxed">
+          <p>
+            Data Science student at <span class="underline decoration-[var(--accent)] decoration-2 underline-offset-4">Florida Polytechnic University</span>, building on an A.S. in Computer Programming &amp; Analysis from the State College of Florida. I care about clean code, clear insights, and saying what the data actually shows.
+          </p>
+          <p class="mt-3 text-[var(--muted)]">
+            When I'm not modeling, I'm probably rewatching <em>The Lord of the Rings</em>.
+          </p>
+        </div>
+
+        <!-- Contact strip -->
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href="mailto:will.mizer@gmail.com" class="btn solid">EMAIL →</a>
+          <button onclick="window.open('assets/will_mizer_resume.pdf')" class="btn">RESUME ↓</button>
+          <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener" class="btn">LINKEDIN ↗</a>
+          <a href="https://github.com/willmizer" target="_blank" rel="noopener" class="btn">GITHUB ↗</a>
+        </div>
+
+        <div class="mt-6 text-xs text-[var(--muted)] tracking-wider">
+          SARASOTA, FL &nbsp;·&nbsp; (941) 812-7787 &nbsp;·&nbsp; will.mizer@gmail.com
+        </div>
       </div>
-    </div>
-     <!-- Project 2 -->
-    <div class="group block bg-white hover:bg-gray-100 p-4 rounded-lg transition-all duration-700 ease-in-out">
-      <div class="transition-opacity duration-700 group-hover:opacity-0 sm:group-hover:opacity-0">
-        <h3 class="text-lg font-bold text-black">🏠 Virginia Housing Analysis</h3>
-        <p class="text-gray-600">
-          End-to-end pipeline that scrapes and cleans Redfin data, then applies machine learning to predict home prices and highlight
-          potential high-value properties. Then built out a streamlit app making the tool accessible, giving homebuyers data-driven insights tailored to their preferences.
-        </p>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="mb-24 sm:mb-32 rise rise-3">
+      <div class="flex items-end justify-between mb-8 border-b border-black pb-3">
+        <div>
+          <div class="idx">01</div>
+          <h2 class="display text-3xl sm:text-5xl mt-1">Toolkit</h2>
+        </div>
       </div>
-      <div class="flex gap-3 mt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-700">
-        <a href="https://github.com/willmizer/va_housing_analysis" target="_blank" rel="noopener noreferrer"
-          class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
-          GitHub
-        </a>
-        <a href="https://vahousing-price-predictor.streamlit.app/" target="_blank" rel="noopener noreferrer"
-          class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
-          Streamlit Demo (30 second start-up)
-        </a>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="chip"><span class="dot"></span>Python</span>
+        <span class="chip"><span class="dot"></span>pandas · numpy · matplotlib</span>
+        <span class="chip"><span class="dot"></span>scikit-learn</span>
+        <span class="chip"><span class="dot"></span>Statistical Analysis</span>
+        <span class="chip"><span class="dot"></span>SQL</span>
+        <span class="chip"><span class="dot"></span>Excel</span>
+        <span class="chip"><span class="dot"></span>Tableau</span>
+        <span class="chip"><span class="dot"></span>Power BI</span>
+        <span class="chip"><span class="dot"></span>Machine Learning</span>
+        <span class="chip"><span class="dot"></span>AWS / GCP</span>
+        <span class="chip"><span class="dot"></span>R · dplyr · ggplot2</span>
+        <span class="chip"><span class="dot"></span>PySpark · Hadoop</span>
       </div>
-    </div>
+    </section>
 
-    <!-- Project 3 -->
-    <div class="group block bg-white hover:bg-gray-100 p-4 rounded-lg transition-all duration-700 ease-in-out">
-      <div class="transition-opacity duration-700 group-hover:opacity-0 sm:group-hover:opacity-0">
-        <h3 class="text-lg font-bold text-black">🎬 MovieMatch - Movie Recommendation Project</h3>
-        <p class="text-gray-600">
-          Developed a personalized movie recommendation system that boosts accuracy by using SentenceTransformer embeddings and a hybrid similarity model across cast, director, genre, and themes. Built entirely in Python, the tool solves real-world group viewing dilemmas through an interactive, AI-driven interface.
-        </p>
+    <!-- PROJECTS -->
+    <section class="mb-24 sm:mb-32 rise rise-4">
+      <div class="flex items-end justify-between mb-8 border-b border-black pb-3">
+        <div>
+          <div class="idx">02</div>
+          <h2 class="display text-3xl sm:text-5xl mt-1">Selected Work</h2>
+        </div>
       </div>
-      <div class="flex gap-3 mt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-700">
-        <a href="https://github.com/willmizer/movie_data_analysis" target="_blank" rel="noopener noreferrer"
-          class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
-          GitHub
-        </a>
-        <a href="https://movie-match-ai.streamlit.app/" target="_blank" rel="noopener noreferrer"
-          class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
-          Streamlit Demo (30 second start-up)
-        </a>
+
+      <div>
+        <!-- P1 -->
+        <article class="project">
+          <div class="accent-num text-2xl sm:text-3xl">01</div>
+          <div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 tracking-tight">College Student Happiness Predictor</h3>
+            <p class="text-sm leading-relaxed text-[var(--ink)] max-w-2xl">
+              End-to-end Machine Learning pipeline in Python predicting college well-being metrics from institutional and student financial data. Trained and compared Random Forest, Linear Regression, and XGBoost; deployed the final predictive app to an AWS EC2 instance for live, interactive access.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2 text-[10px] tracking-widest text-[var(--muted)]">
+              <span class="border border-[var(--muted)] px-2 py-1">PYTHON</span>
+              <span class="border border-[var(--muted)] px-2 py-1">SCIKIT-LEARN</span>
+              <span class="border border-[var(--muted)] px-2 py-1">XGBOOST</span>
+              <span class="border border-[var(--muted)] px-2 py-1">AWS EC2</span>
+            </div>
+          </div>
+          <div class="flex sm:flex-col gap-2">
+            <a href="https://github.com/willmizer/college_happiness" target="_blank" rel="noopener" class="btn">GITHUB ↗</a>
+            <a href="https://collegehappiness.duckdns.org/" target="_blank" rel="noopener" class="btn solid">LIVE DEMO ↗</a>
+          </div>
+        </article>
+
+        <!-- P2 -->
+        <article class="project">
+          <div class="accent-num text-2xl sm:text-3xl">02</div>
+          <div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 tracking-tight">Virginia Housing Analysis</h3>
+            <p class="text-sm leading-relaxed max-w-2xl">
+              Pipeline that scrapes and cleans Redfin data, then applies ML to predict home prices and surface high-value listings. Packaged as a Streamlit app so homebuyers can get data-driven recommendations tailored to their preferences.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2 text-[10px] tracking-widest text-[var(--muted)]">
+              <span class="border border-[var(--muted)] px-2 py-1">WEB SCRAPING</span>
+              <span class="border border-[var(--muted)] px-2 py-1">REGRESSION</span>
+              <span class="border border-[var(--muted)] px-2 py-1">STREAMLIT</span>
+            </div>
+          </div>
+          <div class="flex sm:flex-col gap-2">
+            <a href="https://github.com/willmizer/va_housing_analysis" target="_blank" rel="noopener" class="btn">GITHUB ↗</a>
+            <a href="https://vahousing-price-predictor.streamlit.app/" target="_blank" rel="noopener" class="btn solid">STREAMLIT ↗</a>
+          </div>
+        </article>
+
+        <!-- P3 -->
+        <article class="project">
+          <div class="accent-num text-2xl sm:text-3xl">03</div>
+          <div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 tracking-tight">MovieMatch — Recommendation Engine</h3>
+            <p class="text-sm leading-relaxed max-w-2xl">
+              A personalized recommender that uses SentenceTransformer embeddings and a hybrid similarity model across cast, director, genre, and themes. Built entirely in Python — solves the "what should we watch tonight" group debate.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2 text-[10px] tracking-widest text-[var(--muted)]">
+              <span class="border border-[var(--muted)] px-2 py-1">EMBEDDINGS</span>
+              <span class="border border-[var(--muted)] px-2 py-1">NLP</span>
+              <span class="border border-[var(--muted)] px-2 py-1">STREAMLIT</span>
+            </div>
+          </div>
+          <div class="flex sm:flex-col gap-2">
+            <a href="https://github.com/willmizer/movie_data_analysis" target="_blank" rel="noopener" class="btn">GITHUB ↗</a>
+            <a href="https://movie-match-ai.streamlit.app/" target="_blank" rel="noopener" class="btn solid">STREAMLIT ↗</a>
+          </div>
+        </article>
+
+        <!-- P4 -->
+        <article class="project">
+          <div class="accent-num text-2xl sm:text-3xl">04</div>
+          <div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 tracking-tight">World Happiness Dashboard</h3>
+            <p class="text-sm leading-relaxed max-w-2xl">
+              Interactive Tableau dashboard for global happiness metrics. Filter by country, compare indicators like GDP, life expectancy, and freedom, and surface regional trends through cleaned multi-year datasets and dynamic parameters.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2 text-[10px] tracking-widest text-[var(--muted)]">
+              <span class="border border-[var(--muted)] px-2 py-1">TABLEAU</span>
+              <span class="border border-[var(--muted)] px-2 py-1">DATA VIZ</span>
+            </div>
+          </div>
+          <div class="flex sm:flex-col gap-2">
+            <a href="https://public.tableau.com/app/profile/will.mizer/viz/world_happiness_17544280139280/Dashboard1" target="_blank" rel="noopener" class="btn solid">TABLEAU ↗</a>
+          </div>
+        </article>
       </div>
-    </div>
+    </section>
 
-    <!-- Project 4 -->
-    <div class="group block bg-white hover:bg-gray-100 p-4 rounded-lg transition-all duration-700 ease-in-out">
-      <div class="transition-opacity duration-700 group-hover:opacity-0 sm:group-hover:opacity-0">
-        <h3 class="text-lg font-bold text-black">📊 World Happiness Metrics Dashboard</h3>
-        <p class="text-gray-600">
-          Created an interactive dashboard in Tableau that visualizes global happiness metricse. Users can filter by country, compare individual indicators (like GDP, life expectancy, freedom), and identify regional trends. Powered by cleaned multi-year datasets and dynamic parameters for deep insight.
-        </p>
-      </div>
-      <div class="flex gap-3 mt-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-700">
-        <a href="https://public.tableau.com/app/profile/will.mizer/viz/world_happiness_17544280139280/Dashboard1" target="_blank" rel="noopener noreferrer"
-          class="text-sm px-3 py-1 border border-black text-black rounded hover:bg-black hover:text-white transition">
-          Tableau Cloud Demo
-        </a>
-      </div>
-    </div>
+    <!-- EDUCATION + EXPERIENCE side by side -->
+    <section class="grid grid-cols-12 gap-6 sm:gap-10 mb-24 sm:mb-32 rise rise-5">
+      <!-- Education -->
+      <div class="col-span-12 lg:col-span-5">
+        <div class="flex items-end justify-between mb-6 border-b border-black pb-3">
+          <div>
+            <div class="idx">03</div>
+            <h2 class="display text-3xl sm:text-4xl mt-1">Education</h2>
+          </div>
+        </div>
 
-  </div>
-</section>
-
-
-
-
-    <section class="w-full animate-fade-in">
-  <h2 class="text-2xl font-semibold mb-6 border-b border-gray-300 pb-2">Education</h2>
-
-  <!-- School 1 -->
-  <div class="relative group bg-gray-100 rounded-lg overflow-hidden shadow-sm mb-4">
-    <!-- Background image (initially hidden) -->
-    <img src="assets/poly.png" alt="Florida Polytechnic Campus"
-         class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-30 transition duration-500 z-0" />
-    
-    <!-- Content -->
-    <div class="relative z-10 p-4 transition duration-300 group-hover:bg-white/70">
-      <p class="text-black font-bold">Florida Polytechnic University</p>
-      <p class="text-gray-600 text-sm">B.S. in Data Science — Expected May 2027</p>
-    </div>
-  </div>
-
-  <!-- School 2 -->
-  <div class="relative group bg-gray-100 rounded-lg overflow-hidden shadow-sm">
-    <img src="assets/state_college.png" alt="State College of Florida"
-         class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-30 transition duration-500 z-0" />
-
-    <div class="relative z-10 p-4 transition duration-300 group-hover:bg-white/70">
-      <p class="text-black font-bold">State College of Florida</p>
-      <p class="text-gray-600 text-sm">A.S. in Computer Programming & Analysis — Dec 2023</p>
-    </div>
-  </div>
-</section>
-
-
-    
- <section class="w-full animate-fade-in">
-  <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Certifications</h2>
-  <div class="grid gap-4">
-    
-    <a href="assets/dale_carnegie_page-0001.png" target="_blank" rel="noopener noreferrer"
-       class="block transition-all duration-200 hover:scale-[1.02] hover:shadow rounded cursor-pointer">
-      <div class="p-4 border-l-4 border-black bg-white rounded hover:bg-gray-100">
-        <p class="font-semibold">Dale Carnegie Essential Skills for Success</p>
-        <p class="text-sm text-gray-600">Dale Carnegie</p>
-      </div>
-    </a>
-    
-    <a href="assets/DataSci.png" target="_blank" rel="noopener noreferrer"
-       class="block transition-all duration-200 hover:scale-[1.02] hover:shadow rounded cursor-pointer">
-      <div class="p-4 border-l-4 border-black bg-white rounded hover:bg-gray-100">
-        <p class="font-semibold">Introduction to Data Science with Python</p>
-        <p class="text-sm text-gray-600">edX</p>
-      </div>
-    </a>
-
-    <a href="assets/FatChance.png" target="_blank" rel="noopener noreferrer"
-       class="block transition-all duration-200 hover:scale-[1.02] hover:shadow rounded cursor-pointer">
-      <div class="p-4 border-l-4 border-black bg-white rounded hover:bg-gray-100">
-        <p class="font-semibold">Fat Chance: Probability from the Ground Up</p>
-        <p class="text-sm text-gray-600">edX</p>
-      </div>
-    </a>
-
-    <a href="assets/CS50PCert.png" target="_blank" rel="noopener noreferrer"
-       class="block transition-all duration-200 hover:scale-[1.02] hover:shadow rounded cursor-pointer">
-      <div class="p-4 border-l-4 border-black bg-white rounded hover:bg-gray-100">
-        <p class="font-semibold">CS50's Introduction to Programming with Python</p>
-        <p class="text-sm text-gray-600">edX</p>
-      </div>
-    </a>
-
-  </div>
-</section>
-
-
-
-      
-    <section class="w-full animate-fade-in">
-        <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Work Experience</h2>
         <div class="space-y-4">
-          
-           <div class="p-5 border border-gray-300 bg-white rounded-lg">
-            <p class="text-black font-bold">Florida Polytechnic University</p>
-            <p class="text-sm text-gray-600 italic mb-1">Orientation Leader and Campus Recreation · May 2025 – Present</p>
-            <ul class="list-disc list-inside text-sm text-gray-700">
-              <li>Led campus tours and facilitated group activities to promote engagement</li>
-              <li>Collaborated with fellow OLs and staff to ensure smooth event execution</li>
-              <li>Strengthened leadership, communication and public speaking skills</li>
-            </ul>
-          </div>
-          
-          <div class="p-5 border border-gray-300 bg-white rounded-lg">
-            <p class="text-black font-bold">TELUS International</p>
-            <p class="text-sm text-gray-600 italic mb-1">Online Data Analyst · Nov 2023 – Apr 2024</p>
-            <ul class="list-disc list-inside text-sm text-gray-700">
-              <li>Reviewed digital content to improve AI training datasets.</li>
-              <li>Ensured secure handling of sensitive information in line with data privacy regulations.</li>
-              <li>Provided feedback for optimizing ML model accuracy and relevance.</li>
-            </ul>
+          <div class="edu poly">
+            <div class="flex items-start justify-between mb-2">
+              <span class="text-[10px] tracking-widest text-[var(--accent)]">CURRENT</span>
+              <span class="text-[10px] tracking-widest text-[var(--muted)]">2024 — 2027</span>
+            </div>
+            <p class="font-bold text-lg leading-tight">Florida Polytechnic University</p>
+            <p class="text-sm text-[var(--muted)] mt-1">B.S. Data Science · Expected May 2027</p>
           </div>
 
-
-          <div class="p-5 border border-gray-300 bg-white rounded-lg">
-            <p class="text-black font-bold">The TJX Companies, Inc</p>
-            <p class="text-sm text-gray-600 italic mb-1">Sales Associate · May 2021 – Mar 2022</p>
-            <ul class="list-disc list-inside text-sm text-gray-700">
-              <li>Monitored inventory levels, processed shipments, and restocked merchandise efficiently</li>
-              <li>Assisted customers with product recommendations and floor presentation upkeep.</li>
-              <li>Strengthened skills in retail sales, visual merchandising, customer service, and multitasking</li>
-            </ul>
+          <div class="edu scf">
+            <div class="flex items-start justify-between mb-2">
+              <span class="text-[10px] tracking-widest text-[var(--muted)]">COMPLETED</span>
+              <span class="text-[10px] tracking-widest text-[var(--muted)]">2021 — 2023</span>
+            </div>
+            <p class="font-bold text-lg leading-tight">State College of Florida</p>
+            <p class="text-sm text-[var(--muted)] mt-1">A.S. Computer Programming &amp; Analysis · Dec 2023</p>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section class="w-full animate-fade-in">
-        <h2 class="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2">Let's Talk</h2>
-        <div class="flex flex-wrap gap-4 mt-4">
-          <a href="mailto:will.mizer@gmail.com" class="px-4 py-2 border border-black text-black rounded hover:bg-black hover:text-white hover:scale-105 hover:shadow-md transition duration-300">Email</a>
-          <a href="https://github.com/willmizer" target="_blank" rel="noopener noreferrer" class="px-4 py-2 border border-black text-black rounded hover:bg-black hover:text-white hover:scale-105 hover:shadow-md transition duration-300">GitHub</a>
-          <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener noreferrer" class="px-4 py-2 border border-black text-black rounded hover:bg-black hover:text-white hover:scale-105 hover:shadow-md transition duration-300">LinkedIn</a>
+      <!-- Experience -->
+      <div class="col-span-12 lg:col-span-7">
+        <div class="flex items-end justify-between mb-6 border-b border-black pb-3">
+          <div>
+            <div class="idx">04</div>
+            <h2 class="display text-3xl sm:text-4xl mt-1">Experience</h2>
+          </div>
+        
         </div>
-      </section>
 
-    </main>
-  </body>
+        <div>
+          <div class="job">
+            <div>
+              <p class="text-[10px] tracking-widest text-[var(--accent)] mb-1">CURRENT</p>
+              <p class="text-xs text-[var(--muted)]">MAY 2025 — PRESENT</p>
+            </div>
+            <div>
+              <p class="font-bold">Orientation Leader · Campus Recreation</p>
+              <p class="text-sm text-[var(--muted)] italic mb-2">Florida Polytechnic University</p>
+              <ul class="text-sm space-y-1 list-disc list-inside marker:text-[var(--accent)]">
+                <li>Led campus tours and group activities to promote student engagement</li>
+                <li>Collaborated with OLs and staff to ensure smooth event execution</li>
+                <li>Sharpened leadership, communication, and public-speaking skills</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="job">
+            <div>
+              <p class="text-[10px] tracking-widest text-[var(--muted)] mb-1">PRIOR</p>
+              <p class="text-xs text-[var(--muted)]">NOV 2023 — APR 2024</p>
+            </div>
+            <div>
+              <p class="font-bold">Online Data Analyst</p>
+              <p class="text-sm text-[var(--muted)] italic mb-2">TELUS International</p>
+              <ul class="text-sm space-y-1 list-disc list-inside marker:text-[var(--accent)]">
+                <li>Reviewed digital content to improve AI training datasets</li>
+                <li>Handled sensitive information per data-privacy regulations</li>
+                <li>Provided feedback to optimize ML model accuracy and relevance</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="job">
+            <div>
+              <p class="text-[10px] tracking-widest text-[var(--muted)] mb-1">PRIOR</p>
+              <p class="text-xs text-[var(--muted)]">MAY 2021 — MAR 2022</p>
+            </div>
+            <div>
+              <p class="font-bold">Sales Associate</p>
+              <p class="text-sm text-[var(--muted)] italic mb-2">The TJX Companies, Inc.</p>
+              <ul class="text-sm space-y-1 list-disc list-inside marker:text-[var(--accent)]">
+                <li>Monitored inventory, processed shipments, restocked efficiently</li>
+                <li>Assisted customers with product recommendations and floor upkeep</li>
+                <li>Built skills in retail, visual merchandising, and multitasking</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CERTIFICATIONS -->
+    <section class="mb-24 sm:mb-32">
+      <div class="flex items-end justify-between mb-8 border-b border-black pb-3">
+        <div>
+          <div class="idx">05</div>
+          <h2 class="display text-3xl sm:text-5xl mt-1">Certifications</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="assets/dale_carnegie_page-0001.png" target="_blank" rel="noopener" class="cert">
+          <p class="text-[10px] tracking-widest mb-2 cert-sub text-[var(--muted)]">SOFT SKILLS</p>
+          <p class="font-bold leading-snug">Dale Carnegie Essential Skills for Success</p>
+          <p class="text-sm cert-sub text-[var(--muted)] mt-1">Dale Carnegie</p>
+        </a>
+        <a href="assets/DataSci.png" target="_blank" rel="noopener" class="cert">
+          <p class="text-[10px] tracking-widest mb-2 cert-sub text-[var(--muted)]">DATA SCIENCE</p>
+          <p class="font-bold leading-snug">Introduction to Data Science with Python</p>
+          <p class="text-sm cert-sub text-[var(--muted)] mt-1">edX</p>
+        </a>
+        <a href="assets/FatChance.png" target="_blank" rel="noopener" class="cert">
+          <p class="text-[10px] tracking-widest mb-2 cert-sub text-[var(--muted)]">MATHEMATICS</p>
+          <p class="font-bold leading-snug">Fat Chance: Probability from the Ground Up</p>
+          <p class="text-sm cert-sub text-[var(--muted)] mt-1">edX</p>
+        </a>
+        <a href="assets/CS50PCert.png" target="_blank" rel="noopener" class="cert">
+          <p class="text-[10px] tracking-widest mb-2 cert-sub text-[var(--muted)]">PROGRAMMING</p>
+          <p class="font-bold leading-snug">CS50's Introduction to Programming with Python</p>
+          <p class="text-sm cert-sub text-[var(--muted)] mt-1">edX · Harvard</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="mb-12">
+      <div class="frame relative overflow-hidden">
+        <div class="absolute -right-12 -top-12 text-[12rem] sm:text-[20rem] leading-none font-bold text-[var(--paper-2)] select-none pointer-events-none">@</div>
+
+        <div class="relative">
+          <div class="idx">06 / CONTACT</div>
+          <h2 class="display text-4xl sm:text-7xl mt-2 mb-6">Let's<br/>talk<span class="text-[var(--accent)]">.</span></h2>
+
+          <p class="text-sm max-w-md mb-8 leading-relaxed">
+            Open to data roles/internships, collaborations, and connecting.
+          </p>
+
+          <div class="flex flex-wrap gap-3">
+            <a href="mailto:will.mizer@gmail.com" class="btn solid">WILL.MIZER@GMAIL.COM →</a>
+            <a href="https://github.com/willmizer" target="_blank" rel="noopener" class="btn">GITHUB ↗</a>
+            <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener" class="btn">LINKEDIN ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-black pt-6 flex flex-wrap items-center justify-between text-xs text-[var(--muted)] tracking-widest">
+      <span>© 2026 WILL MIZER</span>
+      <span>↑ BACK TO TOP</span>
+    </footer>
+
+  </main>
+
+  <script>
+    // smooth back to top
+    document.querySelectorAll('footer span').forEach(s => {
+      if (s.textContent.includes('BACK TO TOP')) {
+        s.style.cursor = 'pointer';
+        s.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      }
+    });
+  </script>
+</body>
 </html>
