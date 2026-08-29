@@ -4,620 +4,820 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Will Mizer — Data Science Portfolio</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <style>
   :root {
-    --ink: #0a0a0a;
-    --paper: #f5f3ee;
-    --paper-2: #ebe7df;
-    --rule: #1a1a1a;
+    --ink: #111111;
+    --paper: #f3f1ec;
+    --surface: #fffdfa;
+    --surface-2: #ebe7df;
+    --line: #d5d0c7;
     --accent: #c8472b;
-    --muted: #6b6660;
+    --muted: #68635d;
     --success: #15803d;
   }
-  * { font-family: 'Courier New', Courier, monospace; }
+
+  * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+
   body {
+    margin: 0;
     background: var(--paper);
     color: var(--ink);
-    background-image:
-      radial-gradient(rgba(10,10,10,0.04) 1px, transparent 1px);
-    background-size: 24px 24px;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Top stripe / nav bar */
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
   .topbar {
-    border-bottom: 1px solid var(--ink);
-    background: var(--ink);
-    color: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(17, 17, 17, 0.96);
+    color: #ffffff;
+    border-bottom: 1px solid #000;
+    backdrop-filter: blur(10px);
   }
 
-  /* Section index numbers */
-  .idx {
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-  }
-
-  /* Big display headings */
-  .display {
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 0.88;
-  }
-
-  /* Marquee / ticker */
-  @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .ticker-track {
+  .topbar-inner {
+    width: min(1080px, calc(100% - 40px));
+    margin: 0 auto;
+    min-height: 52px;
     display: flex;
-    width: max-content;
-    animation: ticker 40s linear infinite;
-  }
-  .ticker-item {
-    padding: 0 2rem;
-    white-space: nowrap;
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
-  }
-
-  /* Hover underline that draws in */
-  .link {
-    position: relative;
-    display: inline-block;
-  }
-  .link::after {
-    content: "";
-    position: absolute;
-    left: 0; bottom: -2px;
-    width: 100%; height: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease;
-  }
-  .link:hover::after { transform: scaleX(1); }
-
-  /* Project / Main experience card */
-  .project {
-    border-top: 1px solid var(--ink);
-    padding: 2rem 0;
-    display: grid;
-    grid-template-columns: 80px 1fr auto;
-    gap: 2rem;
-    align-items: start;
-    transition: background 0.3s ease, padding-left 0.4s ease;
-  }
-  .project:hover {
-    background: var(--paper-2);
-    padding-left: 1rem;
-  }
-  .project:last-child { border-bottom: 1px solid var(--ink); }
-  @media (max-width: 640px) {
-    .project { grid-template-columns: 1fr; gap: 0.75rem; }
-  }
-
-  /* Skill chip */
-  .chip {
-    border: 1px solid var(--ink);
-    padding: 0.5rem 0.9rem;
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
-    transition: all 0.2s ease;
-    background: transparent;
-    display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-  }
-  .chip:hover {
-    background: var(--ink);
-    color: var(--paper);
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 var(--accent);
-  }
-  .chip .dot {
-    width: 6px; height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-  }
-
-  /* Cert card */
-  .cert {
-    border: 1px solid var(--ink);
-    padding: 1.1rem 1.2rem;
-    background: var(--paper);
-    transition: all 0.3s ease;
-    display: block;
-  }
-  .cert:hover {
-    background: var(--ink);
-    color: var(--paper);
-    transform: translate(-3px, -3px);
-    box-shadow: 6px 6px 0 var(--accent);
-  }
-  .cert:hover .cert-sub { color: rgba(245,243,238,0.7); }
-
-  /* Job / Side project item */
-  .job {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 1.5rem;
-    padding: 1.25rem 0;
-    border-top: 1px dashed var(--ink);
-  }
-  .job:last-child { border-bottom: 1px dashed var(--ink); }
-  @media (max-width: 640px) {
-    .job { grid-template-columns: 1fr; gap: 0.5rem; }
-  }
-
-  /* Education card with hover image */
-  .edu {
-    position: relative;
-    border: 1px solid var(--ink);
-    padding: 1.5rem;
-    overflow: hidden;
-    background: var(--paper);
-    transition: all 0.3s ease;
-  }
-  .edu::before {
-    content: "";
-    position: absolute; inset: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    z-index: 0;
-  }
-  .edu.poly::before { background-image: url('assets/poly.png'); }
-  .edu.scf::before { background-image: url('assets/state_college.png'); }
-  .edu:hover::before { opacity: 0.18; }
-  .edu > * { position: relative; z-index: 1; }
-
-  /* Reveal animation */
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .rise { animation: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
-  .rise-1 { animation-delay: 0.05s; }
-  .rise-2 { animation-delay: 0.15s; }
-  .rise-3 { animation-delay: 0.25s; }
-  .rise-4 { animation-delay: 0.35s; }
-  .rise-5 { animation-delay: 0.45s; }
-
-  /* Section frame */
-  .frame {
-    border: 1px solid var(--ink);
-    padding: 1.25rem;
-    background: var(--paper);
-  }
-
-  /* Big accent number */
-  .accent-num {
-    color: var(--accent);
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 12px;
     font-weight: 700;
+    letter-spacing: 0.12em;
   }
 
-  /* Outline button */
+  .page {
+    width: min(1080px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 34px 0 56px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 34px;
+    margin-bottom: 24px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 290px;
+    gap: 36px;
+    align-items: stretch;
+  }
+
+  .eyebrow,
+  .section-index,
+  .meta-label,
+  .tag,
+  .status-badge,
+  .project-kicker,
+  .cert-kicker {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .eyebrow,
+  .section-index,
+  .meta-label,
+  .project-kicker,
+  .cert-kicker { color: var(--muted); }
+
+  .hero h1 {
+    margin: 10px 0 18px;
+    font-size: clamp(52px, 7vw, 86px);
+    line-height: 0.93;
+    letter-spacing: -0.055em;
+  }
+
+  .intro {
+    max-width: 670px;
+    font-size: 16px;
+  }
+
+  .intro p { margin: 0 0 10px; }
+  .intro .muted { color: var(--muted); }
+  .underline { border-bottom: 2px solid var(--accent); }
+
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1.1rem;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
     border: 1px solid var(--ink);
-    background: var(--paper);
-    color: var(--ink);
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    transition: all 0.25s ease;
-  }
-  .btn:hover {
-    background: var(--ink);
-    color: var(--paper);
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 var(--accent);
-  }
-  .btn.solid {
-    background: var(--ink);
-    color: var(--paper);
-  }
-  .btn.solid:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--paper);
+    border-radius: 5px;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    cursor: pointer;
   }
 
-  /* Profile portrait */
+  .btn:hover { background: var(--surface-2); }
+  .btn.primary { background: var(--ink); color: #fff; }
+  .btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+
+  .contact-line {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+  }
+
+  .profile-block {
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+  }
+
   .portrait {
     width: 100%;
     aspect-ratio: 1;
     object-fit: cover;
-    border: 1px solid var(--ink);
-    filter: grayscale(0.2) contrast(1.05);
-    transition: transform 0.5s ease, filter 0.5s ease;
-  }
-  .portrait:hover {
-    transform: rotate(-1deg) scale(1.02);
-    filter: grayscale(0) contrast(1);
-  }
-  @media (max-width: 640px) {
-    .portrait,
-    .portrait-wrap {
-      display: none;
-    }
+    border-bottom: 1px solid var(--line);
   }
 
-  /* Decorative corners */
-  .corner-mark::before,
-  .corner-mark::after {
-    content: "+";
-    position: absolute;
-    font-size: 0.9rem;
-    color: var(--ink);
+  .profile-meta { padding: 14px 16px; }
+  .profile-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 750;
   }
-  .corner-mark::before { top: -8px; left: -8px; }
-  .corner-mark::after { bottom: -8px; right: -8px; }
+  .profile-row:last-child { border-bottom: 0; }
+  .profile-row .meta-label { flex: 0 0 auto; }
+  .profile-row .value { text-align: right; }
+  .status { color: var(--success); }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 30px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--paper);
+  }
+
+  .section-head h2 {
+    margin: 0;
+    font-size: clamp(28px, 4vw, 42px);
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .skills {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .skill {
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--paper);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .skill-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex: 0 0 auto;
+  }
+
+  .stack { display: grid; gap: 12px; }
+
+  .experience-card {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 24px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 22px;
+    background: var(--paper);
+  }
+
+  .experience-side {
+    padding-right: 18px;
+    border-right: 1px solid var(--line);
+  }
+
+  .experience-number {
+    color: var(--accent);
+    font-size: 32px;
+    font-weight: 850;
+    letter-spacing: -0.04em;
+    margin-bottom: 14px;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 7px;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .status-badge.current { color: var(--accent); }
+
+  .date {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .experience-main h3 {
+    margin: 0;
+    font-size: 21px;
+    letter-spacing: -0.02em;
+  }
+
+  .company {
+    margin: 3px 0 12px;
+    color: var(--muted);
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  .experience-main p:last-of-type {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 14px;
+  }
+
+  .tag {
+    padding: 5px 7px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--muted);
+    background: var(--surface);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .subsection {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 26px;
+  }
+
+  .subsection .section-head { margin-bottom: 16px; }
+
+  .education-grid,
+  .cert-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .education-card,
+  .project-card,
+  .cert-card {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--paper);
+  }
+
+  .education-card { padding: 17px; }
+  .edu-top,
+  .project-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .edu-status {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .edu-status.current { color: var(--accent); }
+
+  .education-card h3 {
+    margin: 10px 0 2px;
+    font-size: 17px;
+    line-height: 1.2;
+  }
+  .education-card p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .project-card {
+    padding: 17px;
+    min-height: 210px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-kicker.featured { color: var(--accent); }
+  .project-type {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .project-card h3 {
+    margin: 18px 0 4px;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .github-link {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .project-tech {
+    color: var(--muted);
+    font-size: 12px;
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .project-card ul {
+    margin: 0;
+    padding-left: 17px;
+    font-size: 12px;
+  }
+  .project-card li + li { margin-top: 4px; }
+  .project-card li::marker { color: var(--accent); }
+
+  .cert-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cert-card {
+    display: block;
+    padding: 17px;
+    min-height: 118px;
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+  .cert-card:hover { border-color: var(--ink); background: var(--surface); }
+  .cert-card h3 { margin: 10px 0 3px; font-size: 15px; line-height: 1.3; }
+  .cert-card p { margin: 0; color: var(--muted); font-size: 12px; }
+
+  .contact-panel {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 30px;
+    align-items: end;
+  }
+
+  .contact-symbol {
+    position: absolute;
+    right: 24px;
+    top: -42px;
+    font-size: 180px;
+    line-height: 1;
+    font-weight: 900;
+    color: var(--surface-2);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .contact-panel > *:not(.contact-symbol) { position: relative; z-index: 1; }
+
+  .contact-panel h2 {
+    margin: 6px 0 14px;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+  }
+
+  .contact-panel h2 span { color: var(--accent); }
+  .contact-panel p { max-width: 470px; margin: 0; font-size: 14px; }
+
+  footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 8px 2px 0;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .back-top { cursor: pointer; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .profile-block { max-width: 320px; }
+    .skills { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 680px) {
+    .topbar-inner,
+    .page { width: min(100% - 24px, 1080px); }
+    .topbar-inner { min-height: 48px; }
+    .topbar-inner span:last-child { display: none; }
+    .page { padding-top: 18px; }
+    .panel,
+    .subsection { padding: 21px; }
+    .hero { gap: 24px; }
+    .hero h1 { font-size: 54px; }
+    .profile-block { display: none; }
+    .skills { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .experience-card { grid-template-columns: 1fr; gap: 16px; }
+    .experience-side {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 16px;
+      align-items: start;
+      padding-right: 0;
+      padding-bottom: 14px;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .experience-number { grid-row: 1 / span 2; margin: 0; }
+    .education-grid,
+    .project-grid,
+    .cert-grid { grid-template-columns: 1fr !important; }
+    .contact-panel { grid-template-columns: 1fr; align-items: start; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+
+  @media (max-width: 430px) {
+    .skills { grid-template-columns: 1fr; }
+    .button-row .btn { width: 100%; }
+  }
 </style>
 </head>
-<body class="antialiased">
+<body>
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between text-xs tracking-widest">
+  <header class="topbar">
+    <div class="topbar-inner">
       <span>WILL.MIZER / PORTFOLIO</span>
-      <span class="hidden sm:inline">SARASOTA · FL · USA</span>
+      <span>SARASOTA · FL · USA</span>
     </div>
-  </div>
+  </header>
 
-  <main class="max-w-6xl mx-auto px-6 sm:px-10 py-12 sm:py-20">
+  <main class="page">
 
-    <!-- HERO -->
-    <section class="grid grid-cols-12 gap-6 sm:gap-10 mb-24 sm:mb-32">
-      <div class="col-span-12 sm:col-span-4 rise rise-1">
-        <div class="relative">
-          <span class="corner-mark"></span>
-          <img src="assets/profile-pic-modified.png" alt="Will Mizer" class="portrait" />
-        </div>
-        <div class="mt-4 text-xs leading-relaxed">
-          <div class="flex justify-between border-b border-black py-1">
-            <span class="text-[var(--muted)]">ROLE</span>
-            <span>DATA SCIENCE</span>
-          </div>
-          <div class="flex justify-between border-b border-black py-1">
-            <span class="text-[var(--muted)]">STATUS</span>
-            <span style="color: var(--success);">● OPEN TO FUTURE OPPORTUNITIES</span>
-          </div>
-        </div>
-      </div>
+    <section class="panel hero" id="top">
+      <div>
+        <div class="eyebrow">INTRODUCTION</div>
+        <h1>Will<br />Mizer</h1>
 
-      <div class="col-span-12 sm:col-span-8 rise rise-2">
-        <div class="flex items-baseline justify-between mb-4">
-          <span class="idx">INTRODUCTION</span>
-        </div>
-
-        <h1 class="display text-[3.5rem] sm:text-[6.5rem]">
-          Will<br/>
-          Mizer
-        </h1>
-
-        <div class="mt-6 max-w-xl text-[15px] leading-relaxed">
+        <div class="intro">
           <p>
-            Data Science student at <span class="underline decoration-[var(--accent)] decoration-2 underline-offset-4">Florida Polytechnic University</span>, building on an A.S. in Computer Programming &amp; Analysis from the State College of Florida. I care about clean code, clear insights, and saying what the data actually shows.
+            Data Science student at <span class="underline">Florida Polytechnic University</span>, building on an A.S. in Computer Programming &amp; Analysis from the State College of Florida. I care about clean code, clear insights, and saying what the data actually shows.
           </p>
-          <p class="mt-3 text-[var(--muted)]">
+          <p class="muted">
             When I'm not modeling, I'm probably rewatching <em>The Lord of the Rings</em>.
           </p>
         </div>
 
-        <!-- Contact strip -->
-        <div class="mt-8 flex flex-wrap items-center gap-3">
-          <a href="mailto:will.mizer@gmail.com" class="btn solid">EMAIL →</a>
+        <div class="button-row">
+          <a href="mailto:will.mizer@gmail.com" class="btn primary">EMAIL →</a>
           <button onclick="window.open('assets/will_mizer_resume.pdf')" class="btn">RESUME ↓</button>
           <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener" class="btn">LINKEDIN ↗</a>
           <a href="https://github.com/willmizer" target="_blank" rel="noopener" class="btn">GITHUB ↗</a>
         </div>
 
-        <div class="mt-6 text-xs text-[var(--muted)] tracking-wider">
+        <div class="contact-line">
           SARASOTA, FL &nbsp;·&nbsp; (941) 812-7787 &nbsp;·&nbsp; will.mizer@gmail.com
         </div>
       </div>
+
+      <aside class="profile-block">
+        <img src="assets/profile-pic-modified.png" alt="Will Mizer" class="portrait" />
+        <div class="profile-meta">
+          <div class="profile-row">
+            <span class="meta-label">ROLE</span>
+            <span class="value">DATA SCIENCE</span>
+          </div>
+          <div class="profile-row">
+            <span class="meta-label">STATUS</span>
+            <span class="value status">● OPEN TO FUTURE OPPORTUNITIES</span>
+          </div>
+        </div>
+      </aside>
     </section>
 
-    <!-- SKILLS -->
-    <section class="mb-24 sm:mb-32 rise rise-3">
-      <div class="flex items-end justify-between mb-8 border-b border-black pb-3">
-        <div>
-          <div class="idx">01</div>
-          <h2 class="display text-3xl sm:text-5xl mt-1">Toolkit</h2>
-        </div>
+    <section class="panel" id="toolkit">
+      <div class="section-head">
+        <span class="section-index">01</span>
+        <h2>Toolkit</h2>
       </div>
 
-      <div class="flex flex-wrap gap-3">
-        <span class="chip"><span class="dot"></span>Python</span>
-        <span class="chip"><span class="dot"></span>pandas · numpy · matplotlib</span>
-        <span class="chip"><span class="dot"></span>scikit-learn</span>
-        <span class="chip"><span class="dot"></span>Statistical Analysis</span>
-        <span class="chip"><span class="dot"></span>SQL</span>
-        <span class="chip"><span class="dot"></span>Excel</span>
-        <span class="chip"><span class="dot"></span>Tableau</span>
-        <span class="chip"><span class="dot"></span>Power BI</span>
-        <span class="chip"><span class="dot"></span>Machine Learning</span>
-        <span class="chip"><span class="dot"></span>AWS / GCP</span>
-        <span class="chip"><span class="dot"></span>R · dplyr · ggplot2</span>
-        <span class="chip"><span class="dot"></span>PySpark · Hadoop</span>
+      <div class="skills">
+        <div class="skill"><span class="skill-dot"></span>Python</div>
+        <div class="skill"><span class="skill-dot"></span>pandas · numpy · matplotlib</div>
+        <div class="skill"><span class="skill-dot"></span>scikit-learn</div>
+        <div class="skill"><span class="skill-dot"></span>Statistical Analysis</div>
+        <div class="skill"><span class="skill-dot"></span>SQL</div>
+        <div class="skill"><span class="skill-dot"></span>Excel</div>
+        <div class="skill"><span class="skill-dot"></span>Tableau</div>
+        <div class="skill"><span class="skill-dot"></span>Power BI</div>
+        <div class="skill"><span class="skill-dot"></span>Machine Learning</div>
+        <div class="skill"><span class="skill-dot"></span>AWS / GCP</div>
+        <div class="skill"><span class="skill-dot"></span>R · dplyr · ggplot2</div>
+        <div class="skill"><span class="skill-dot"></span>PySpark · Hadoop</div>
       </div>
     </section>
 
-    <!-- EXPERIENCE (MAIN SHOWCASE) -->
-    <section class="mb-24 sm:mb-32 rise rise-4">
-      <div class="flex items-end justify-between mb-8 border-b border-black pb-3">
-        <div>
-          <div class="idx">02</div>
-          <h2 class="display text-3xl sm:text-5xl mt-1">Experience</h2>
-        </div>
+    <section class="panel" id="experience">
+      <div class="section-head">
+        <span class="section-index">02</span>
+        <h2>Experience</h2>
       </div>
 
-      <div>
-        <!-- E1: One Alliance -->
-        <article class="project">
-          <div class="accent-num text-2xl sm:text-3xl">01</div>
-          <div>
-            <div class="flex items-center gap-3 mb-1">
-              <span class="text-[10px] tracking-widest text-[var(--accent)] border border-[var(--accent)] px-2 py-0.5">CURRENT</span>
-              <span class="text-xs text-[var(--muted)]">JUN 2026 — AUGUST 2026</span>
+      <div class="stack">
+        <article class="experience-card">
+          <div class="experience-side">
+            <div class="experience-number">01</div>
+            <div>
+              <div class="status-badge current">CURRENT</div>
+              <div class="date">JUN 2026 — AUGUST 2026</div>
             </div>
-            <h3 class="text-xl sm:text-2xl font-bold mb-1 tracking-tight">Data Analyst Intern</h3>
-            <p class="text-sm text-[var(--muted)] italic mb-3">One Alliance North America · Sarasota, FL</p>
-            <p class="text-sm leading-relaxed text-[var(--ink)] max-w-2xl">
+          </div>
+          <div class="experience-main">
+            <h3>Data Analyst Intern</h3>
+            <p class="company">One Alliance North America · Sarasota, FL</p>
+            <p>
               Architected an end-to-end policy churn prediction framework from data research and ETL through feature engineering, model selection, and deployment. Evaluated baseline models via PyCaret, validated performance with walk-forward backtesting across rolling time horizons, and partnered cross-functionally to resolve edge cases—establishing a baseline model preserving $500,000 in annual recurring revenue. Authored production-grade technical documentation in LaTeX detailing pipeline mechanics and scaling roadmaps.
             </p>
-            <div class="mt-3 flex flex-wrap gap-2 text-[10px] tracking-widest text-[var(--muted)]">
-              <span class="border border-[var(--muted)] px-2 py-1">PYTHON</span>
-              <span class="border border-[var(--muted)] px-2 py-1">PYCARET</span>
-              <span class="border border-[var(--muted)] px-2 py-1">XGBOOST</span>
-              <span class="border border-[var(--muted)] px-2 py-1">SQL</span>
-              <span class="border border-[var(--muted)] px-2 py-1">LATEX</span>
+            <div class="tags">
+              <span class="tag">PYTHON</span>
+              <span class="tag">PYCARET</span>
+              <span class="tag">XGBOOST</span>
+              <span class="tag">SQL</span>
+              <span class="tag">LATEX</span>
             </div>
           </div>
         </article>
 
-        <!-- E2: Orientation Leader -->
-        <article class="project">
-          <div class="accent-num text-2xl sm:text-3xl">02</div>
-          <div>
-            <div class="flex items-center gap-3 mb-1">
-              <span class="text-[10px] tracking-widest text-[var(--muted)] border border-[var(--muted)] px-2 py-0.5">PRIOR</span>
-              <span class="text-xs text-[var(--muted)]">MAY 2025 — MAY 2026</span>
+        <article class="experience-card">
+          <div class="experience-side">
+            <div class="experience-number">02</div>
+            <div>
+              <div class="status-badge">PRIOR</div>
+              <div class="date">MAY 2025 — MAY 2026</div>
             </div>
-            <h3 class="text-xl sm:text-2xl font-bold mb-1 tracking-tight">Orientation Leader &amp; Campus Recreation</h3>
-            <p class="text-sm text-[var(--muted)] italic mb-3">Florida Polytechnic University · Lakeland, FL</p>
-            <p class="text-sm leading-relaxed text-[var(--ink)] max-w-2xl">
+          </div>
+          <div class="experience-main">
+            <h3>Orientation Leader &amp; Campus Recreation</h3>
+            <p class="company">Florida Polytechnic University · Lakeland, FL</p>
+            <p>
               Facilitated onboarding and team-building initiatives for 100+ incoming students, honing conflict resolution, active listening, and public speaking under pressure. Collaborated with university administration to streamline campus logistics, adapting engagement strategies in real time to serve diverse student needs.
             </p>
-            <div class="mt-3 flex flex-wrap gap-2 text-[10px] tracking-widest text-[var(--muted)]">
-              <span class="border border-[var(--muted)] px-2 py-1">LEADERSHIP</span>
-              <span class="border border-[var(--muted)] px-2 py-1">PUBLIC SPEAKING</span>
-              <span class="border border-[var(--muted)] px-2 py-1">STAKEHOLDER COLLABORATION</span>
+            <div class="tags">
+              <span class="tag">LEADERSHIP</span>
+              <span class="tag">PUBLIC SPEAKING</span>
+              <span class="tag">STAKEHOLDER COLLABORATION</span>
             </div>
           </div>
         </article>
 
-        <!-- E3: TELUS International -->
-        <article class="project">
-          <div class="accent-num text-2xl sm:text-3xl">03</div>
-          <div>
-            <div class="flex items-center gap-3 mb-1">
-              <span class="text-[10px] tracking-widest text-[var(--muted)] border border-[var(--muted)] px-2 py-0.5">PRIOR</span>
-              <span class="text-xs text-[var(--muted)]">NOV 2023 — APR 2024</span>
+        <article class="experience-card">
+          <div class="experience-side">
+            <div class="experience-number">03</div>
+            <div>
+              <div class="status-badge">PRIOR</div>
+              <div class="date">NOV 2023 — APR 2024</div>
             </div>
-            <h3 class="text-xl sm:text-2xl font-bold mb-1 tracking-tight">AI Data Analyst</h3>
-            <p class="text-sm text-[var(--muted)] italic mb-3">TELUS International · Remote</p>
-            <p class="text-sm leading-relaxed text-[var(--ink)] max-w-2xl">
+          </div>
+          <div class="experience-main">
+            <h3>AI Data Analyst</h3>
+            <p class="company">TELUS International · Remote</p>
+            <p>
               Executed Quality Assurance and data validation across large-scale datasets to optimize data integrity for Large Language Model training pipelines. Evaluated, annotated, and audited complex model responses to generate reliable ground-truth datasets, enhancing safety alignment and output quality.
             </p>
-            <div class="mt-3 flex flex-wrap gap-2 text-[10px] tracking-widest text-[var(--muted)]">
-              <span class="border border-[var(--muted)] px-2 py-1">QUALITY ASSURANCE</span>
-              <span class="border border-[var(--muted)] px-2 py-1">LLM EVALUATION</span>
-              <span class="border border-[var(--muted)] px-2 py-1">DATA AUDITING</span>
+            <div class="tags">
+              <span class="tag">QUALITY ASSURANCE</span>
+              <span class="tag">LLM EVALUATION</span>
+              <span class="tag">DATA AUDITING</span>
             </div>
           </div>
         </article>
       </div>
     </section>
 
-    <!-- EDUCATION + PROJECTS (SIDE BY SIDE) -->
-    <section class="grid grid-cols-12 gap-6 sm:gap-10 mb-24 sm:mb-32 rise rise-5">
-      <!-- Education -->
-      <div class="col-span-12 lg:col-span-5">
-        <div class="flex items-end justify-between mb-6 border-b border-black pb-3">
-          <div>
-            <div class="idx">03</div>
-            <h2 class="display text-3xl sm:text-4xl mt-1">Education</h2>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="edu poly">
-            <div class="flex items-start justify-between mb-2">
-              <span class="text-[10px] tracking-widest text-[var(--accent)]">CURRENT</span>
-              <span class="text-[10px] tracking-widest text-[var(--muted)]">2024 — 2027</span>
-            </div>
-            <p class="font-bold text-lg leading-tight">Florida Polytechnic University</p>
-            <p class="text-sm text-[var(--muted)] mt-1">B.S. Data Science · Expected May 2027</p>
-          </div>
-
-          <div class="edu scf">
-            <div class="flex items-start justify-between mb-2">
-              <span class="text-[10px] tracking-widest text-[var(--muted)]">COMPLETED</span>
-              <span class="text-[10px] tracking-widest text-[var(--muted)]">2021 — 2023</span>
-            </div>
-            <p class="font-bold text-lg leading-tight">State College of Florida</p>
-            <p class="text-sm text-[var(--muted)] mt-1">A.S. Computer Programming &amp; Analysis · Dec 2023</p>
-          </div>
-        </div>
+    <section class="panel" id="education">
+      <div class="section-head">
+        <span class="section-index">03</span>
+        <h2>Education</h2>
       </div>
 
-      <!-- Selected Projects -->
-      <div class="col-span-12 lg:col-span-7">
-        <div class="flex items-end justify-between mb-6 border-b border-black pb-3">
-          <div>
-            <div class="idx">04</div>
-            <h2 class="display text-3xl sm:text-4xl mt-1">Projects</h2>
+      <div class="education-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+        <div class="education-card">
+          <div class="edu-top">
+            <span class="edu-status current">CURRENT</span>
+            <span class="date">2024 — 2027</span>
           </div>
+          <h3>Florida Polytechnic University</h3>
+          <p>B.S. Data Science · Expected May 2027</p>
         </div>
 
-        <div>
-          <!-- P1 -->
-          <div class="job">
-            <div>
-              <p class="text-[10px] tracking-widest text-[var(--accent)] mb-1">FEATURED</p>
-              <p class="text-xs text-[var(--muted)]">ML &amp; SIMULATION</p>
-            </div>
-            <div>
-              <div class="flex items-center justify-between">
-                <p class="font-bold">Interactive Churn &amp; VaR Platform</p>
-                <a href="https://github.com/willmizer" target="_blank" rel="noopener" class="text-xs text-[var(--accent)] hover:underline">GITHUB ↗</a>
-              </div>
-              <p class="text-xs text-[var(--muted)] italic mb-2">Python · XGBoost · SHAP · Flask · AWS</p>
-              <ul class="text-xs space-y-1 list-disc list-inside marker:text-[var(--accent)]">
-                <li>Built a dual-model ensemble with SHAP explainability</li>
-                <li>Integrated Value-at-Risk financial loss modeling</li>
-              </ul>
-            </div>
+        <div class="education-card">
+          <div class="edu-top">
+            <span class="edu-status">COMPLETED</span>
+            <span class="date">2021 — 2023</span>
           </div>
-
-          <!-- P2 -->
-          <div class="job">
-            <div>
-              <p class="text-[10px] tracking-widest text-[var(--muted)] mb-1">PROJECT</p>
-              <p class="text-xs text-[var(--muted)]">DATA SCIENCE</p>
-            </div>
-            <div>
-              <div class="flex items-center justify-between">
-                <p class="font-bold">College Happiness Simulator</p>
-                <a href="https://github.com/willmizer/college_happiness" target="_blank" rel="noopener" class="text-xs text-[var(--accent)] hover:underline">GITHUB ↗</a>
-              </div>
-              <p class="text-xs text-[var(--muted)] italic mb-2">Python · Random Forest · Flask · AWS</p>
-              <ul class="text-xs space-y-1 list-disc list-inside marker:text-[var(--accent)]">
-                <li>Engineered dataset of 3,200+ universities via web scraping</li>
-                <li>Simulated institutional budget allocation satisfaction gains</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- P3 -->
-          <div class="job">
-            <div>
-              <p class="text-[10px] tracking-widest text-[var(--muted)] mb-1">PROJECT</p>
-              <p class="text-xs text-[var(--muted)]">REAL ESTATE ML</p>
-            </div>
-            <div>
-              <div class="flex items-center justify-between">
-                <p class="font-bold">Virginia Housing Analysis</p>
-                <a href="https://github.com/willmizer/va_housing_analysis" target="_blank" rel="noopener" class="text-xs text-[var(--accent)] hover:underline">GITHUB ↗</a>
-              </div>
-              <p class="text-xs text-[var(--muted)] italic mb-2">Python · XGBoost · Streamlit · SQL</p>
-              <ul class="text-xs space-y-1 list-disc list-inside marker:text-[var(--accent)]">
-                <li>Scraped housing metrics to cut prediction MAE by 50%</li>
-                <li>Deployed an interactive Streamlit pricing &amp; investment tool</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- P4 -->
-          <div class="job">
-            <div>
-              <p class="text-[10px] tracking-widest text-[var(--muted)] mb-1">PROJECT</p>
-              <p class="text-xs text-[var(--muted)]">NLP &amp; RECOMMENDER</p>
-            </div>
-            <div>
-              <div class="flex items-center justify-between">
-                <p class="font-bold">MovieMatch Engine</p>
-                <a href="https://github.com/willmizer/movie_data_analysis" target="_blank" rel="noopener" class="text-xs text-[var(--accent)] hover:underline">GITHUB ↗</a>
-              </div>
-              <p class="text-xs text-[var(--muted)] italic mb-2">Python · SentenceTransformer · Streamlit</p>
-              <ul class="text-xs space-y-1 list-disc list-inside marker:text-[var(--accent)]">
-                <li>Engineered hybrid similarity matching across cast, genre, and NLP embeddings</li>
-              </ul>
-            </div>
-          </div>
+          <h3>State College of Florida</h3>
+          <p>A.S. Computer Programming &amp; Analysis · Dec 2023</p>
         </div>
       </div>
     </section>
 
-    <!-- CERTIFICATIONS -->
-    <section class="mb-24 sm:mb-32">
-      <div class="flex items-end justify-between mb-8 border-b border-black pb-3">
-        <div>
-          <div class="idx">05</div>
-          <h2 class="display text-3xl sm:text-5xl mt-1">Certifications</h2>
-        </div>
+    <section class="panel" id="projects">
+      <div class="section-head">
+        <span class="section-index">04</span>
+        <h2>Projects</h2>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <a href="assets/dale_carnegie_page-0001.png" target="_blank" rel="noopener" class="cert">
-          <p class="text-[10px] tracking-widest mb-2 cert-sub text-[var(--muted)]">SOFT SKILLS</p>
-          <p class="font-bold leading-snug">Dale Carnegie Essential Skills for Success</p>
-          <p class="text-sm cert-sub text-[var(--muted)] mt-1">Dale Carnegie</p>
-        </a>
-        <a href="assets/DataSci.png" target="_blank" rel="noopener" class="cert">
-          <p class="text-[10px] tracking-widest mb-2 cert-sub text-[var(--muted)]">DATA SCIENCE</p>
-          <p class="font-bold leading-snug">Introduction to Data Science with Python</p>
-          <p class="text-sm cert-sub text-[var(--muted)] mt-1">edX</p>
-        </a>
-        <a href="assets/FatChance.png" target="_blank" rel="noopener" class="cert">
-          <p class="text-[10px] tracking-widest mb-2 cert-sub text-[var(--muted)]">MATHEMATICS</p>
-          <p class="font-bold leading-snug">Fat Chance: Probability from the Ground Up</p>
-          <p class="text-sm cert-sub text-[var(--muted)] mt-1">edX</p>
-        </a>
-        <a href="assets/CS50PCert.png" target="_blank" rel="noopener" class="cert">
-          <p class="text-[10px] tracking-widest mb-2 cert-sub text-[var(--muted)]">PROGRAMMING</p>
-          <p class="font-bold leading-snug">CS50's Introduction to Programming with Python</p>
-          <p class="text-sm cert-sub text-[var(--muted)] mt-1">edX · Harvard</p>
-        </a>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="mb-12">
-      <div class="frame relative overflow-hidden">
-        <div class="absolute -right-12 -top-12 text-[12rem] sm:text-[20rem] leading-none font-bold text-[var(--paper-2)] select-none pointer-events-none">@</div>
-
-        <div class="relative">
-          <div class="idx">06 / CONTACT</div>
-          <h2 class="display text-4xl sm:text-7xl mt-2 mb-6">Let's<br/>talk<span class="text-[var(--accent)]">.</span></h2>
-
-          <p class="text-sm max-w-md mb-8 leading-relaxed">
-            Open to data roles/internships, collaborations, and connecting.
-          </p>
-
-          <div class="flex flex-wrap gap-3">
-            <a href="mailto:will.mizer@gmail.com" class="btn solid">WILL.MIZER@GMAIL.COM →</a>
-            <a href="https://github.com/willmizer" target="_blank" rel="noopener" class="btn">GITHUB ↗</a>
-            <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener" class="btn">LINKEDIN ↗</a>
+      <div class="project-grid">
+        <article class="project-card">
+          <div class="project-top">
+            <div>
+              <div class="project-kicker featured">FEATURED</div>
+              <div class="project-type">ML &amp; SIMULATION</div>
+            </div>
+            <a href="https://github.com/willmizer" target="_blank" rel="noopener" class="github-link">GITHUB ↗</a>
           </div>
-        </div>
+          <h3>Interactive Churn &amp; VaR Platform</h3>
+          <div class="project-tech">Python · XGBoost · SHAP · Flask · AWS</div>
+          <ul>
+            <li>Built a dual-model ensemble with SHAP explainability</li>
+            <li>Integrated Value-at-Risk financial loss modeling</li>
+          </ul>
+        </article>
+
+        <article class="project-card">
+          <div class="project-top">
+            <div>
+              <div class="project-kicker">PROJECT</div>
+              <div class="project-type">DATA SCIENCE</div>
+            </div>
+            <a href="https://github.com/willmizer/college_happiness" target="_blank" rel="noopener" class="github-link">GITHUB ↗</a>
+          </div>
+          <h3>College Happiness Simulator</h3>
+          <div class="project-tech">Python · Random Forest · Flask · AWS</div>
+          <ul>
+            <li>Engineered dataset of 3,200+ universities via web scraping</li>
+            <li>Simulated institutional budget allocation satisfaction gains</li>
+          </ul>
+        </article>
+
+        <article class="project-card">
+          <div class="project-top">
+            <div>
+              <div class="project-kicker">PROJECT</div>
+              <div class="project-type">REAL ESTATE ML</div>
+            </div>
+            <a href="https://github.com/willmizer/va_housing_analysis" target="_blank" rel="noopener" class="github-link">GITHUB ↗</a>
+          </div>
+          <h3>Virginia Housing Analysis</h3>
+          <div class="project-tech">Python · XGBoost · Streamlit · SQL</div>
+          <ul>
+            <li>Scraped housing metrics to cut prediction MAE by 50%</li>
+            <li>Deployed an interactive Streamlit pricing &amp; investment tool</li>
+          </ul>
+        </article>
+
+        <article class="project-card">
+          <div class="project-top">
+            <div>
+              <div class="project-kicker">PROJECT</div>
+              <div class="project-type">NLP &amp; RECOMMENDER</div>
+            </div>
+            <a href="https://github.com/willmizer/movie_data_analysis" target="_blank" rel="noopener" class="github-link">GITHUB ↗</a>
+          </div>
+          <h3>MovieMatch Engine</h3>
+          <div class="project-tech">Python · SentenceTransformer · Streamlit</div>
+          <ul>
+            <li>Engineered hybrid similarity matching across cast, genre, and NLP embeddings</li>
+          </ul>
+        </article>
       </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-black pt-6 flex flex-wrap items-center justify-between text-xs text-[var(--muted)] tracking-widest">
+    <section class="panel" id="certifications">
+      <div class="section-head">
+        <span class="section-index">05</span>
+        <h2>Certifications</h2>
+      </div>
+
+      <div class="cert-grid">
+        <a href="assets/dale_carnegie_page-0001.png" target="_blank" rel="noopener" class="cert-card">
+          <div class="cert-kicker">SOFT SKILLS</div>
+          <h3>Dale Carnegie Essential Skills for Success</h3>
+          <p>Dale Carnegie</p>
+        </a>
+
+        <a href="assets/DataSci.png" target="_blank" rel="noopener" class="cert-card">
+          <div class="cert-kicker">DATA SCIENCE</div>
+          <h3>Introduction to Data Science with Python</h3>
+          <p>edX</p>
+        </a>
+
+        <a href="assets/FatChance.png" target="_blank" rel="noopener" class="cert-card">
+          <div class="cert-kicker">MATHEMATICS</div>
+          <h3>Fat Chance: Probability from the Ground Up</h3>
+          <p>edX</p>
+        </a>
+
+        <a href="assets/CS50PCert.png" target="_blank" rel="noopener" class="cert-card">
+          <div class="cert-kicker">PROGRAMMING</div>
+          <h3>CS50's Introduction to Programming with Python</h3>
+          <p>edX · Harvard</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="panel contact-panel" id="contact">
+      <div class="contact-symbol">@</div>
+      <div>
+        <div class="eyebrow">06 / CONTACT</div>
+        <h2>Let's<br />talk<span>.</span></h2>
+        <p>Open to data roles/internships, collaborations, and connecting.</p>
+      </div>
+
+      <div class="button-row">
+        <a href="mailto:will.mizer@gmail.com" class="btn primary">WILL.MIZER@GMAIL.COM →</a>
+        <a href="https://github.com/willmizer" target="_blank" rel="noopener" class="btn">GITHUB ↗</a>
+        <a href="https://www.linkedin.com/in/will-mizer/" target="_blank" rel="noopener" class="btn">LINKEDIN ↗</a>
+      </div>
+    </section>
+
+    <footer>
       <span>© 2026 WILL MIZER</span>
-      <span>↑ BACK TO TOP</span>
+      <span class="back-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">↑ BACK TO TOP</span>
     </footer>
 
   </main>
-
-  <script>
-    // smooth back to top
-    document.querySelectorAll('footer span').forEach(s => {
-      if (s.textContent.includes('BACK TO TOP')) {
-        s.style.cursor = 'pointer';
-        s.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-      }
-    });
-  </script>
 </body>
 </html>
