@@ -588,6 +588,10 @@
               <span class="chip">AWS / GCP</span>
               <span class="chip">R · dplyr · ggplot2</span>
               <span class="chip">PySpark · Hadoop</span>
+              <span class="chip">Streamlit</span>
+              <span class="chip">XGBoost · SHAP</span>
+              <span class="chip">Web Scraping</span>
+              <span class="chip">LLM Evaluation</span>
             </div>
           </div>
 
@@ -918,6 +922,18 @@
     </div>
   </div>
 
+  <!-- mobile viewing notice, shown once per session on narrow viewports -->
+  <div id="mobile-notice" class="cert-modal-overlay" hidden>
+    <div class="cert-modal-box" style="max-width: 22rem;">
+      <div class="cert-modal-body">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center;">
+          <p class="text-sm leading-relaxed">This site is best viewed on a desktop. Everything still works on mobile, some layouts are just tighter.</p>
+          <button type="button" id="mobile-notice-ack" class="btn-primary">Got it</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // spa-style panel router using the view transitions api where available,
     // with a css fade/slide fallback for browsers that do not support it.
@@ -1063,6 +1079,25 @@
 
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && !overlay.hidden) closeCert();
+      });
+    })();
+
+    // mobile viewing notice: shown once per session on narrow viewports
+    (function () {
+      var notice = document.getElementById('mobile-notice');
+      var ackBtn = document.getElementById('mobile-notice-ack');
+      if (!notice || !ackBtn) return;
+
+      var STORAGE_KEY = 'mobileNoticeAcknowledged';
+      var isMobile = window.matchMedia('(max-width: 640px)').matches;
+      var alreadySeen = false;
+      try { alreadySeen = !!sessionStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+      if (isMobile && !alreadySeen) notice.hidden = false;
+
+      ackBtn.addEventListener('click', function () {
+        notice.hidden = true;
+        try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
       });
     })();
   </script>
