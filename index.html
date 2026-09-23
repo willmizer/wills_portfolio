@@ -381,7 +381,7 @@
 
   /* section panels + transitions */
   .panel { min-height: 60vh; }
-  .panel-enter { animation: panel-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .panel-enter { animation: panel-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
   @keyframes panel-in {
     from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
@@ -389,7 +389,7 @@
 
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation-duration: 0.45s;
+    animation-duration: 0.7s;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -543,7 +543,9 @@
             <h1 class="hero-name font-display">Will Mizer</h1>
             <p class="hero-role mt-2">Data Scientist &amp; Analyst.</p>
             <p class="mt-5 max-w-md text-[15px] leading-relaxed text-[var(--muted)]">
-              I turn messy data into decisions worth trusting, from cleaning and modeling through to the story a stakeholder actually needs to hear.
+              I enjoy taking messy data, making sense of it, and turning it into insights people can actually use. From cleaning and modeling to telling the story behind the numbers.
+
+
             </p>
             <button type="button" data-target="projects" class="btn-primary mt-8">
               View My Work
@@ -628,7 +630,7 @@
     <section id="panel-projects" class="panel" data-panel hidden>
       <div class="max-w-6xl mx-auto px-6 sm:px-10 py-16 sm:py-24">
         <h2 class="font-display text-3xl sm:text-4xl font-semibold mb-2">Projects</h2>
-        <p class="text-sm text-[var(--muted)] mb-8">Best viewed on desktop, but fully usable on mobile too.</p>
+        <p class="text-sm text-[var(--muted)] mb-8"></p>
 
         <div class="border-t border-[var(--border)]">
 
@@ -793,7 +795,7 @@
               <ul class="bullet-list mt-1 space-y-2 text-sm leading-relaxed text-[var(--muted)] max-w-2xl">
                 <li>Designed an end-to-end <strong>policy churn prediction framework</strong> from data research and ETL through feature engineering, model selection, tuning, and deployment.</li>
                 <li>Developed baseline models using PyCaret and validated performance through <strong>walk-forward backtesting</strong> across rolling time horizons.</li>
-                <li>Partnered with business departments to resolve domain edge cases and established a foundational model identifying <strong>$500,000 in at-risk annual recurring revenue</strong>.</li>
+                <li>Partnered with business departments to resolve in house data issues and established a foundational model identifying <strong>$500,000 in at-risk annual recurring revenue</strong>.</li>
                 <li>Authored production-grade technical documentation in LaTeX detailing pipeline mechanics, business context, and scaling roadmaps.</li>
               </ul>
               <div class="mt-4 flex flex-wrap gap-2">
