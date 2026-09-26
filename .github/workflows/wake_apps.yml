@@ -2,9 +2,8 @@ name: Wake Streamlit Apps
 
 on:
   schedule:
-    - cron: '0 13 * * *'   # 9am ET (EDT, UTC-4)
-    - cron: '0 21 * * *'   # 5pm ET (EDT, UTC-4)
-  workflow_dispatch:         # lets you trigger it manually from GitHub too
+    - cron: '0 */3 * * *'  # every 3 hours
+  workflow_dispatch:
 
 jobs:
   wake:
@@ -24,6 +23,7 @@ jobs:
           python - <<'EOF'
           import asyncio
           from playwright.async_api import async_playwright
+          from datetime import datetime
 
           URLS = [
               "https://insurance-churn-predictions.streamlit.app/",
@@ -36,16 +36,42 @@ jobs:
           async def wake():
               async with async_playwright() as p:
                   browser = await p.chromium.launch(headless=True)
+                  results = []
+
                   for url in URLS:
-                      print(f"Visiting: {url}")
                       page = await browser.new_page()
                       try:
-                          await page.goto(url, wait_until="networkidle", timeout=60000)
-                          print(f"  Done")
+                          await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+
+                          # check for streamlit sleep button
+                          wake_btn = await page.query_selector("text=Yes, get this app back up!")
+                          if not wake_btn:
+                              wake_btn = await page.query_selector("button:has-text('get this app')")
+
+                          if wake_btn:
+                              await wake_btn.click()
+                              results.append(("SLEEPING", url))
+                          else:
+                              results.append(("AWAKE", url))
+
                       except Exception as e:
-                          print(f"  Timeout/error (app may be waking): {e}")
+                          results.append(("ERROR", f"{url} — {e}"))
                       await page.close()
+
                   await browser.close()
+
+                  sleeping = [r for r in results if r[0] == "SLEEPING"]
+                  awake    = [r for r in results if r[0] == "AWAKE"]
+                  errors   = [r for r in results if r[0] == "ERROR"]
+
+                  print("=" * 60)
+                  print(f"  Run: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
+                  print(f"  Awake: {len(awake)}  |  Sleeping: {len(sleeping)}  |  Errors: {len(errors)}")
+                  print("=" * 60)
+                  for status, url in results:
+                      icon = "✅" if status == "AWAKE" else "💤" if status == "SLEEPING" else "❌"
+                      print(f"  {icon} {status:<8} {url}")
+                  print("=" * 60)
 
           asyncio.run(wake())
           EOF
