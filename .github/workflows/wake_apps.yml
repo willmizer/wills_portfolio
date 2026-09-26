@@ -5,10 +5,15 @@ on:
     - cron: '0 */3 * * *'  # every 3 hours
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   wake:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -18,7 +23,7 @@ jobs:
           pip install playwright
           playwright install chromium --with-deps
 
-      - name: Wake apps
+      - name: Wake apps and log results
         run: |
           python - <<'EOF'
           import asyncio
@@ -43,7 +48,6 @@ jobs:
                       try:
                           await page.goto(url, wait_until="domcontentloaded", timeout=60000)
 
-                          # check for streamlit sleep button
                           wake_btn = await page.query_selector("text=Yes, get this app back up!")
                           if not wake_btn:
                               wake_btn = await page.query_selector("button:has-text('get this app')")
@@ -64,14 +68,39 @@ jobs:
                   awake    = [r for r in results if r[0] == "AWAKE"]
                   errors   = [r for r in results if r[0] == "ERROR"]
 
-                  print("=" * 60)
-                  print(f"  Run: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
-                  print(f"  Awake: {len(awake)}  |  Sleeping: {len(sleeping)}  |  Errors: {len(errors)}")
-                  print("=" * 60)
+                  lines = []
+                  lines.append("=" * 60)
+                  lines.append(f"  Run: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
+                  lines.append(f"  Awake: {len(awake)}  |  Sleeping: {len(sleeping)}  |  Errors: {len(errors)}")
+                  lines.append("=" * 60)
                   for status, url in results:
-                      icon = "✅" if status == "AWAKE" else "💤" if status == "SLEEPING" else "❌"
-                      print(f"  {icon} {status:<8} {url}")
-                  print("=" * 60)
+                      icon = "OK" if status == "AWAKE" else "ZZ" if status == "SLEEPING" else "!!"
+                      lines.append(f"  [{icon}] {status:<8} {url}")
+                  lines.append("=" * 60)
+                  lines.append("")
+
+                  entry = "\n".join(lines)
+
+                  # print to Actions log
+                  print(entry)
+
+                  # append to persistent log file (newest at top)
+                  try:
+                      with open("wake_log.txt", "r") as f:
+                          existing = f.read()
+                  except FileNotFoundError:
+                      existing = ""
+
+                  with open("wake_log.txt", "w") as f:
+                      f.write(entry + existing)
 
           asyncio.run(wake())
           EOF
+
+      - name: Commit log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add wake_log.txt
+          git diff --cached --quiet || git commit -m "chore: update wake log $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
