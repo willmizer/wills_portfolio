@@ -2,7 +2,7 @@ name: Wake Streamlit Apps
 
 on:
   schedule:
-    - cron: '0 */2 * * *'  # every 2 hours
+    - cron: '0 */2 * * *'  # every 2 hours UTC (midnight, 2am, 4am...)
   workflow_dispatch:
 
 permissions:
