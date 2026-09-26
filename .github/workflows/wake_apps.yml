@@ -1,0 +1,51 @@
+name: Wake Streamlit Apps
+
+on:
+  schedule:
+    - cron: '0 13 * * *'   # 9am ET (EDT, UTC-4)
+    - cron: '0 21 * * *'   # 5pm ET (EDT, UTC-4)
+  workflow_dispatch:         # lets you trigger it manually from GitHub too
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: Wake apps
+        run: |
+          python - <<'EOF'
+          import asyncio
+          from playwright.async_api import async_playwright
+
+          URLS = [
+              "https://insurance-churn-predictions.streamlit.app/",
+              "https://vahousing-price-predictor.streamlit.app/",
+              "https://collegehappiness.streamlit.app/",
+              "https://us-cities-dashboard.streamlit.app/",
+              "https://movie-match-ai.streamlit.app/",
+          ]
+
+          async def wake():
+              async with async_playwright() as p:
+                  browser = await p.chromium.launch(headless=True)
+                  for url in URLS:
+                      print(f"Visiting: {url}")
+                      page = await browser.new_page()
+                      try:
+                          await page.goto(url, wait_until="networkidle", timeout=60000)
+                          print(f"  Done")
+                      except Exception as e:
+                          print(f"  Timeout/error (app may be waking): {e}")
+                      await page.close()
+                  await browser.close()
+
+          asyncio.run(wake())
+          EOF
