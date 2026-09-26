@@ -27,23 +27,28 @@ jobs:
         run: |
           python - <<'EOF'
           import asyncio
+          import csv
+          import os
           from playwright.async_api import async_playwright
           from datetime import datetime
 
-          URLS = [
-              "https://insurance-churn-predictions.streamlit.app/",
-              "https://vahousing-price-predictor.streamlit.app/",
-              "https://collegehappiness.streamlit.app/",
-              "https://us-cities-dashboard.streamlit.app/",
-              "https://movie-match-ai.streamlit.app/",
+          APPS = [
+              ("insurance_churn",    "https://insurance-churn-predictions.streamlit.app/"),
+              ("va_housing",         "https://vahousing-price-predictor.streamlit.app/"),
+              ("college_happiness",  "https://collegehappiness.streamlit.app/"),
+              ("us_cities",          "https://us-cities-dashboard.streamlit.app/"),
+              ("movie_match",        "https://movie-match-ai.streamlit.app/"),
           ]
+
+          COLUMNS = ["timestamp"] + [name for name, _ in APPS]
+          LOG_FILE = "wake_log.csv"
 
           async def wake():
               async with async_playwright() as p:
                   browser = await p.chromium.launch(headless=True)
-                  results = []
+                  row = {"timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")}
 
-                  for url in URLS:
+                  for name, url in APPS:
                       page = await browser.new_page()
                       try:
                           await page.goto(url, wait_until="domcontentloaded", timeout=60000)
@@ -54,45 +59,29 @@ jobs:
 
                           if wake_btn:
                               await wake_btn.click()
-                              results.append(("SLEEPING", url))
+                              row[name] = 0   # was sleeping
                           else:
-                              results.append(("AWAKE", url))
+                              row[name] = 1   # already awake
 
-                      except Exception as e:
-                          results.append(("ERROR", f"{url} — {e}"))
+                      except Exception:
+                          row[name] = -1      # error / unreachable
                       await page.close()
 
                   await browser.close()
 
-                  sleeping = [r for r in results if r[0] == "SLEEPING"]
-                  awake    = [r for r in results if r[0] == "AWAKE"]
-                  errors   = [r for r in results if r[0] == "ERROR"]
+                  # print summary to Actions log
+                  print(f"\nRun: {row['timestamp']}")
+                  for name, url in APPS:
+                      status = {1: "AWAKE", 0: "SLEEPING", -1: "ERROR"}[row[name]]
+                      print(f"  {status:<8} {url}")
 
-                  lines = []
-                  lines.append("=" * 60)
-                  lines.append(f"  Run: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
-                  lines.append(f"  Awake: {len(awake)}  |  Sleeping: {len(sleeping)}  |  Errors: {len(errors)}")
-                  lines.append("=" * 60)
-                  for status, url in results:
-                      icon = "OK" if status == "AWAKE" else "ZZ" if status == "SLEEPING" else "!!"
-                      lines.append(f"  [{icon}] {status:<8} {url}")
-                  lines.append("=" * 60)
-                  lines.append("")
-
-                  entry = "\n".join(lines)
-
-                  # print to Actions log
-                  print(entry)
-
-                  # append to persistent log file (newest at top)
-                  try:
-                      with open("wake_log.txt", "r") as f:
-                          existing = f.read()
-                  except FileNotFoundError:
-                      existing = ""
-
-                  with open("wake_log.txt", "w") as f:
-                      f.write(entry + existing)
+                  # write header if file doesn't exist yet
+                  write_header = not os.path.exists(LOG_FILE)
+                  with open(LOG_FILE, "a", newline="") as f:
+                      writer = csv.DictWriter(f, fieldnames=COLUMNS)
+                      if write_header:
+                          writer.writeheader()
+                      writer.writerow(row)
 
           asyncio.run(wake())
           EOF
@@ -101,6 +90,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add wake_log.txt
+          git add wake_log.csv
           git diff --cached --quiet || git commit -m "chore: update wake log $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push
