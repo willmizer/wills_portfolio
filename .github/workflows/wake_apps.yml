@@ -33,7 +33,6 @@ jobs:
           from datetime import datetime
 
           APPS = [
-              ("insurance_churn",    "https://insurance-churn-predictions.streamlit.app/"),
               ("va_housing",         "https://vahousing-price-predictor.streamlit.app/"),
               ("college_happiness",  "https://collegehappiness.streamlit.app/"),
               ("us_cities",          "https://us-cities-dashboard.streamlit.app/"),
