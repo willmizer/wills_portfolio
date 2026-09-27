@@ -26,7 +26,7 @@ Four end-to-end data science projects, each with a live demo and GitHub link:
 
 ### Experience
 - **Undergraduate Researcher — LLM Bias & Responsible AI** · Florida Polytechnic University (Jan 2026 – Present): researching demographic discrimination in LLM resume classification, building data pipelines across 5 models, preparing findings for academic publication.
-- **Data Analyst Intern** · One Alliance North America (Jun 2026 – Present): end-to-end churn prediction framework, walk-forward backtesting, identified $500K in at-risk ARR.
+- **Data Analyst Intern** · One Alliance North America (Jun 2026 – Aug 2026): end-to-end churn prediction framework, walk-forward backtesting, identified $500K in at-risk ARR.
 - **AI Data Analyst** · TELUS International (Nov 2023 – Apr 2024): LLM evaluation, annotation, and quality assurance for training pipelines.
 
 ### Certifications
