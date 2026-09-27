@@ -15,14 +15,13 @@ A brief intro — who I am and what I do.
 Background as a Data Science student at Florida Polytechnic University (B.S., expected May 2027), building on an A.S. in Computer Programming & Analysis from the State College of Florida (Dec 2023). Includes a full toolkit breakdown covering Python, pandas, scikit-learn, SQL, Tableau, Power BI, XGBoost, SHAP, Streamlit, PySpark, R, and more.
 
 ### Projects
-Five end-to-end data science projects, each with a live demo and GitHub link:
+Four end-to-end data science projects, each with a live demo and GitHub link:
 
 | Project | Domain | Stack |
 |---|---|---|
 | College Happiness Simulator | Behavioral Simulation | Python, Random Forest, Streamlit, Plotly |
 | US Cities & Election Dashboard | Civic Data | Python, Census API, Streamlit, Plotly |
-| Interactive Churn & VaR Platform | Financial Risk | Python, XGBoost, SHAP, Streamlit |
-| Virginia Housing Analysis | Real Estate | Python, XGBoost, Streamlit, SQL |
+| Virginia Housing Analysis | Real Estate | Python, Random Forest, Streamlit, SQL |
 | MovieMatch Engine | Recommendation Systems | Python, SentenceTransformer, Streamlit |
 
 ### Experience
