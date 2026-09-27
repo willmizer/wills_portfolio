@@ -50,7 +50,9 @@ jobs:
                   for name, url in APPS:
                       page = await browser.new_page()
                       try:
-                          await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                          await page.goto(url, wait_until="networkidle", timeout=60000)
+                          # Give React time to render the wake button after network settles
+                          await page.wait_for_timeout(3000)
 
                           wake_btn = await page.query_selector("text=Yes, get this app back up!")
                           if not wake_btn:
@@ -59,6 +61,11 @@ jobs:
                           if wake_btn:
                               await wake_btn.click()
                               row[name] = 0   # was sleeping
+                              # Wait up to 90s for the app to spin up after waking
+                              try:
+                                  await page.wait_for_load_state("networkidle", timeout=90000)
+                              except Exception:
+                                  pass
                           else:
                               row[name] = 1   # already awake
 
